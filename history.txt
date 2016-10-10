@@ -1,0 +1,50 @@
+    1  netstat -ntlp | grep sshd
+    2  apt-get install language-pack-ko
+    3  locale-gen ko_KR.EUC-KR
+    4  vi /etc/environment
+    5  jjjj$a
+    6  q!
+    7  vi /etc/environment
+    8  reboot
+    9  sudo passwd root
+   10  date
+   11  tzselect
+   12  vi .profile
+   13  date
+   14  locale
+   15  vi /etc/default/locale 
+   16  locale
+   17  reboot
+   18  locale
+   19  apt-get update
+   20  apt-get upgrade
+   21  apt-get build-essential
+   22  apt-get install build-essential
+   23  apt-get install apache2
+   24  apt-get install mysql-server mysql-client
+   25  apt-get install php libapache2-mod-php php-xml php-gd php-mysql
+   26  netstat -nlp
+   27  mysql -uroot -p
+   28  vi /etc/mysql/my.cnf
+   29  mysql -uroot -p
+   30  vi /etc/mysql/my.cnf
+   31  mysql -uroot -p
+   32  mysql restart
+   33  mysql -p restart
+   34  vi /etc/php/7.0/apache2/php.ini 
+   35  netstat -nlp
+   36  chkconfig
+   37  apt-get install git
+   38  git config --global user.name ytkim4558
+   39  git config --global user.email ytkim4558@naver.com
+   40  cd /var/www/html/
+   41  ls
+   42  git init
+   43  tail -f /var/log/apache2/error.log 
+   44  apt-get install bind9
+   45  apt-get install php-mysql
+   46  service mysql restart
+   47  service apache2 restart
+   48  Job for mysql.service failed because the control process exited with error code. See "systemctl status mysql.service" and "journalctl -xe" for details.
+   49  history
+   50  history > history.txt
