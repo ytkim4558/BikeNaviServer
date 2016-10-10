@@ -48,3 +48,16 @@
    48  Job for mysql.service failed because the control process exited with error code. See "systemctl status mysql.service" and "journalctl -xe" for details.
    49  history
    50  history > history.txt
+   51  ls
+   52  cd android_login_api/
+   53  ls
+   54  cd .
+   55  cd ..
+   56  git add *.*
+   57  git commit -m "서버 복사"
+   58  git remote add origin https://ytkim4558@bitbucket.org/ytkim4558/bikenaviserver2.git
+   59  git push -u origin master
+   60  git add android_login_api/
+   61  git commit -m "android_login_api copy"
+   62  git push 
+   63  history > history.txt
