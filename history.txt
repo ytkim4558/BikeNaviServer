@@ -146,3 +146,17 @@
   146  service apache2 restart
   147  cd /var/www/html
   148  history > history.txt
+  149  git add *.*
+  150  git commit -m "mysql 외부접속 설정"
+  151  git push
+  152  apt-get install composer
+  153  composer require google/apiclient:^2.0
+  154  composer
+  155  curl -sS https://getcomposer.org/installer | php
+  156  mv composer.phar /usr/local/bin/
+  157  composer
+  158  echo $PATH
+  159* export PATH="$PATH:~/.composer/vend
+  160  echo $PATH
+  161  composer require google/apiclient:^2.0
+  162  history > history.txt
