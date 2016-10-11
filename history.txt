@@ -61,3 +61,88 @@
    61  git commit -m "android_login_api copy"
    62  git push 
    63  history > history.txt
+   64  git commit -m "history update"
+   65  git status
+   66  git add history.txt
+   67  git commit -m "history update"
+   68  git push
+   69  mysql -uroot -p
+   70  mysql 
+   71  chown mysql /path/mysql
+   72  service mysqld start
+   73  service mysql stop
+   74  service mysql start
+   75  Job for mysql.service failed because the control process exited with error code. See "systemctl status mysql.service" and "journalctl -xe" for details.
+   76  ps aux | grep mysql | grep -v grep
+   77  apt-get install mysql-client
+   78  service mysql restart
+   79  service mysqld start
+   80  apt-get install phpmyadmin
+   81  vim /etc/mysql/my.cnf
+   82  service mysqld restart
+   83  vim /etc/mysql/my.cnf
+   84  /etc/init.d/mysql restart
+   85  mysql.serviceJob for mysql.service failed because the control process exited with error code. See "systemctl status mysql.service" and "journalctl -xe" for details.
+   86  systemctl status mysql.service
+   87  jounalctl -xe
+   88  journalctl -xe
+   89  /etc/init.d/mysql stop
+   90  /etc/init.d/mysqls stop
+   91  /etc/init.d/mysql stop
+   92  /etc/init.d/mysql start
+   93  systemctl status mysql.service
+   94  mysql
+   95  mysql -u root -p --socket=/tmp/mysql.sock
+   96  mysql
+   97  mysql -u root -p --socket=/tmp/mysql.sock
+   98  netstat -an | grep mysql
+   99  netstat - an | grep mysql
+  100  %mysqladmin variables
+  101  mysql_config --socket
+  102  mysqld --verbose --help | grep ^socket
+  103  vi /var/log/mysql/error.log 
+  104  tail /var/log/mysql/error.log 
+  105  mysql
+  106  tail -f /var/log/mysql/error.log 
+  107  vi /etc/mysql/my.cnf
+  108  service mysql start
+  109  tail -f /var/log/mysql/error.log 
+  110  service mysql stop
+  111  service mysql restart
+  112  tail -f /var/log/mysql/error.log 
+  113  service mysql restart
+  114  mysql -uroot -p
+  115  apt-get install phpmyadmin
+  116  mysql
+  117  mysql -uroot -p
+  118  apt-get --purge remove phpmyadmin
+  119  apt-get install phpmyadmin
+  120  tail -f /var/log/apache2/error.log 
+  121  phpmyadmin
+  122  tail -f /var/log/apache2/error.log 
+  123  sudo apt-get install php-mbstring php-gettext
+  124  vim /etc/apache2/apache2.conf
+  125  service apache2 restart
+  126  tail -f /var/log/apache2/error.log 
+  127  timezone
+  128  date
+  129  tzselect
+  130  dpkg-reconfigure tzdata
+  131  tail -f /var/log/apache2/error.log 
+  132  date
+  133  tail -f /var/log/apache2/error.log 
+  134  tail -f /var/log/apache2/error.log
+  135  ufw status
+  136  netstat -tnlp
+  137  mysql -uroot -p
+  138  vi /etc/mysql/my.cnf
+  139  service mysql restart
+  140  netstat -ntlp | grep mysqld
+  141  vi /etc/mysql/mysql.cnf
+  142  vi /etc/mysql/my.cnf
+  143  service mysql restart
+  144  netstat -ntlp | grep mysqld
+  145  mysql -uroot -p
+  146  service apache2 restart
+  147  cd /var/www/html
+  148  history > history.txt
