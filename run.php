@@ -1,13 +1,13 @@
 <?php 
-$link = mysqli_connect("localhost", "root", "7109789", "test");
+$mysqli = new mysqli_connect("43.224.34.5", "root", "ab7109789", "test");
 // check connection
-if($link->connect_errno) {
-	die('Could not connect: ' . mysql_error());
+if($mysqli->connect_errno) {
+	die('Could not connect: ' . $mysqli->error);
 }
 
 
 $name = $_GET["name"];
 $sqlt = "insert into test.data (name) values ('메롱')";
-mysqli_query($link, $sqlt);
-mysqli_close($link);
+mysqli_query($mysqli, $sqlt);
+mysqli_close($mysqli);
 ?>

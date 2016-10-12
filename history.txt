@@ -156,7 +156,29 @@
   156  mv composer.phar /usr/local/bin/
   157  composer
   158  echo $PATH
-  159* export PATH="$PATH:~/.composer/vend
+  159  export PATH="$PATH:~/.composer/vend
   160  echo $PATH
   161  composer require google/apiclient:^2.0
   162  history > history.txt
+  163  git add vendor/
+  164  git add *.*
+  165  git status
+  166  git commit -m "composer설치 및 google client 설치"
+  167  git push
+  168  mysql -uroot -p
+  169  mysqladmin -uroot -p create BIKENAVI
+  170  mysql -uroot -p BIKENAVI < dump161011.sql 
+  171  tail -f /var/log/apache2/error.log 
+  172  [Tue Oct 11 16:11:07.142111 2016] [:error] [pid 30702] [client 211.36.150.130:31890] refresh_token :
+  173  [Tue Oct 11 16:11:07.142113 2016] [:error] [pid 30702] [client 211.36.150.130:31890] refresh_token array : null
+  174  [Tue Oct 11 16:11:07.147546 2016] [:error] [pid 30702] [client 211.36.150.130:31890] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in /var/www/html/android_login_api/include/DB_Functions.php on line 171
+  175  [Tue Oct 11 16:11:07.147725 2016] [:error] [pid 30702] [client 211.36.150.130:31890] PHP Fatal error:  Uncaught Error: Call to a member function bind_param() on null in /var/www/html/android_login_api/include/DB_Functions.php:172\nStack trace:\n#0 /var/www/html/android_login_api/register.php(109): DB_Functions->isUserExistedWithGoogle('ytkim4558@gmail...')\n#1 {main}\n  thrown in /var/www/html/android_login_api/include/DB_Functions.php on line 172
+  176  tail -f /var/log/apache2/error.log 
+  177  tail -f /var/log/mysql/error.log 
+  178  date
+  179  mysql -uroot -p]
+  180  mysql -uroot -p
+  181  tail -f /var/log/apache2/error.log 
+  182  apt -get install sendmail
+  183  cd /var/www/html/
+  184  history > history.txt
