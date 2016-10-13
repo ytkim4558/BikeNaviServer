@@ -119,7 +119,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			// 나중에 활용가능? : 주석 처리 액세스 토큰과 리프레시 토큰을 활용할 때 구현하도록 한다. 현재로서는 유저 이메일만 가져오면 됨.
 // 나중에 활용가능? 			if(isset($access_token) && isset($refresh_token) ) {
 // 나중에 활용가능?				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($email, json_encode($access_token), json_encode($refresh_token));
-			$user = $db->storeUserWithGoogleEmail($email);
+				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($email, json_encode($access_token), json_encode($refresh_token));
+			//$user = $db->storeUserWithGoogleEmail($email);
 // 나중에 활용가능?			} else {
 // 나중에 활용가능?				$user = false;
 // 나중에 활용가능?				$response["error_msg"] = "accesstoken : " . json_encode($access_token) . ", refreshToken : " . json_encode($refresh_token);
