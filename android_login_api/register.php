@@ -145,25 +145,27 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		$response["error_msg"] = "인증되지 않은 어플입니다.";
 		echo json_encode($response);
 	}
-} else if(isset($_POST['kakaoNickName'])) {
-	$email = $_POST['kakaoNickName'];
-	error_log($email);
-	if($db->isUserExistedWithKakao($email)) {
+} else if(isset($_POST['kakaoNickName']) && isset($_POST['kakaoID'])) {
+	$kakaoID = $_POST['kakaoID'];
+	$kakatotalknickname = $_POST['kakaoNickName'];
+	error_log("kakaoID : " . $kakaoID);
+	error_log("kakaonick : " . $kakatotalknickname);
+	if($db->isUserExistedWithKakao($kakaoID)) {
 		// 이미 유저가 있는 경우 
 		// 로그인 시도
-		$user = $db->getKakaoUserByEmail($email);
+		$user = $db->getKakaoUserByID($kakaoID);
 		$response["error"] = FALSE;
-		$response["user"]["kakaoemail"] = $user["KAKATOK_EMAIL"];
+		$response["user"]["kakaonickname"] = $user["KAKAO_NICK_NAME"];
 		$response["user"]["created_at"] = $user["CREATED_AT"];
 		$response["user"]["updated_at"] = $user["UPDATED_AT"];
 		echo json_encode($response);
 	} else {
 		$user = false;
-		$user = $db->storeUserWithKakaoNickName($email);
+		$user = $db->storeUserWithKakaoIDAndNickName($kakaoID, $kakatotalknickname);
 		if ($user) {
 			// user stored successfully
 			$response["error"] = FALSE;
-			$response["user"]["kakaoemail"] = $user["KAKATOK_EMAIL"];
+			$response["user"]["kakaonickname"] = $user["KAKAO_NICK_NAME"];
 			$response["user"]["created_at"] = $user["CREATED_AT"];
 			$response["user"]["updated_at"] = $user["UPDATED_AT"];
 			echo json_encode($response);
@@ -174,7 +176,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			echo json_encode($response);
 		}
 	}
-} else if(isset($_POST['facebookEMail'])) {
+} else if(isset($_POST['facebookEmail'])) {
+	$email = $_POST['facebookEmail'];
 	if($db->isUserExistedWithFacebook($email)) {
 		// 이미 유저가 있는 경우 
 		// 로그인 시도

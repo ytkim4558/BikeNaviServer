@@ -77,17 +77,17 @@ class DB_Functions {
 	}
 	
 	// 카카오톡 
-	public function storeUserWithKakaoNickName($email) {
-		$stmt = $this->conn->prepare("INSERT INTO USERS(KAKATOK_EMAIL, CREATED_AT) VALUES(?, NOW())");
-		$stmt->bind_param("s", $email);
+	public function storeUserWithKakaoIDAndNickName($id, $nickname) {
+		$stmt = $this->conn->prepare("INSERT INTO USERS(KAKAO_ID, KAKAO_NICK_NAME, CREATED_AT) VALUES(?, ?, NOW())");
+		$stmt->bind_param("ss", $id, $nickname);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
 		$stmt->close();
 	
 		// check for successful store
 		if($result) {
-			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE KAKATOK_EMAIL = ?");
-			$stmt->bind_param("s", $email);
+			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE KAKAO_ID = ?");
+			$stmt->bind_param("s", $id);
 			$stmt->execute();
 			$user = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
@@ -126,9 +126,11 @@ class DB_Functions {
 	 * return user details
 	 */
 	public function storeUserWithGoogleEmailnAccessTokennRefreshToken($email, $accessToken, $refreshToken) {
+		
 		error_log("accesstoken : " . $accessToken . "refreshToken : " . $refreshToken);
-		$stmt = $this->conn->prepare("INSERT INTO USERS(CREATED_AT, GOOGLE_EMAIL, GOOGLE_ACCESS_TOKEN, GOOGLE_REFRESH_TOKEN) VALUES(?, NOW(), ?, ? ,?)");
+		$stmt = $this->conn->prepare("INSERT INTO USERS(CREATED_AT, GOOGLE_EMAIL, GOOGLE_ACCESS_TOKEN, GOOGLE_REFRESH_TOKEN) VALUES(NOW(), ?, ?, ?)");
 		$stmt->bind_param("sss", $email, $accessToken, $refreshToken);
+		
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
 		$stmt->close();
@@ -165,12 +167,12 @@ class DB_Functions {
 	}
 	
 	/**
-	 * Get user by 카카오이메일
+	 * Get user by 카카오id
 	 */
-	public function getKakaoUserByEmail($email) {
-		$query = "SELECT * FROM USERS WHERE KAKATOK_EMAIL = ?";
+	public function getKakaoUserByID($id) {
+		$query = "SELECT * FROM USERS WHERE KAKAO_ID = ?";
 		$stmt = $this->conn->prepare($query);
-		$stmt->bind_param("s", $email);
+		$stmt->bind_param("s", $id);
 		if($stmt->execute()) {
 			$user = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
@@ -291,13 +293,13 @@ class DB_Functions {
 	/**
 	 * Check user is existed or not
 	 */
-	public function isUserExistedWithKakao($EMAIL) {
-		$stmt = $this->conn->prepare("SELECT KAKATOK_EMAIL from USERS WHERE KAKATOK_EMAIL = ?");
+	public function isUserExistedWithKakao($id) {
+		$stmt = $this->conn->prepare("SELECT KAKAO_ID from USERS WHERE KAKAO_ID = ?");
 		if ($stmt == FALSE) {
 			error_log($this->conn->error);
 			return false;
 		}
-		$stmt->bind_param("s", $EMAIL);
+		$stmt->bind_param("s", $id);
 		$stmt->execute();
 		$stmt->store_result();
 		if ($stmt->num_rows() > 0) {
