@@ -56,15 +56,59 @@ class DB_Functions {
 	 * 추후 storeUserWithGoogleEmailnAccessTokennRefreshToken($email, $accessToken, $refreshToken) 변경 해야한다.
 	 */
 	public function storeUserWithGoogleEmail($email) {
-		$stmt = $this->conn->prepare("INSERT INTO USERS(USER_EMAIL, CREATED_AT, GOOGLE_EMAIL) VALUES(?, NOW(), ?)");
-		$stmt->bind_param("ss", $email, $email);
+		$stmt = $this->conn->prepare("INSERT INTO USERS(GOOGLE_EMAIL, CREATED_AT) VALUES(?, NOW())");
+		$stmt->bind_param("s", $email);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
 		$stmt->close();
 	
 		// check for successful store
 		if($result) {
-			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE USER_EMAIL = ?");
+			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE GOOGLE_EMAIL = ?");
+			$stmt->bind_param("s", $email);
+			$stmt->execute();
+			$user = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+	
+			return $user;
+		} else {
+			return false;
+		}
+	}
+	
+	// 카카오톡 
+	public function storeUserWithKakaoNickName($email) {
+		$stmt = $this->conn->prepare("INSERT INTO USERS(KAKATOK_EMAIL, CREATED_AT) VALUES(?, NOW())");
+		$stmt->bind_param("s", $email);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE KAKATOK_EMAIL = ?");
+			$stmt->bind_param("s", $email);
+			$stmt->execute();
+			$user = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+	
+			return $user;
+		} else {
+			return false;
+		}
+	}
+	
+	// 카카오톡
+	public function storeUserWithFacebookEmail($email) {
+		$stmt = $this->conn->prepare("INSERT INTO USERS(FACEBOOK_EMAIL, CREATED_AT) VALUES(?, NOW())");
+		$stmt->bind_param("s", $email);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE FACEBOOK_EMAIL = ?");
 			$stmt->bind_param("s", $email);
 			$stmt->execute();
 			$user = $stmt->get_result()->fetch_assoc();
@@ -83,8 +127,8 @@ class DB_Functions {
 	 */
 	public function storeUserWithGoogleEmailnAccessTokennRefreshToken($email, $accessToken, $refreshToken) {
 		error_log("accesstoken : " . $accessToken . "refreshToken : " . $refreshToken);
-		$stmt = $this->conn->prepare("INSERT INTO USERS(USER_EMAIL, CREATED_AT, GOOGLE_EMAIL, GOOGLE_ACCESS_TOKEN, GOOGLE_REFRESH_TOKEN) VALUES(?, NOW(), ?, ? ,?)");
-		$stmt->bind_param("ssss", $email, $email, $accessToken, $refreshToken);
+		$stmt = $this->conn->prepare("INSERT INTO USERS(CREATED_AT, GOOGLE_EMAIL, GOOGLE_ACCESS_TOKEN, GOOGLE_REFRESH_TOKEN) VALUES(?, NOW(), ?, ? ,?)");
+		$stmt->bind_param("sss", $email, $accessToken, $refreshToken);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
 		$stmt->close();
@@ -107,13 +151,47 @@ class DB_Functions {
 	 * Get user by 구글 토큰
 	 */
 	public function getGoogleUserByEmail($email) {
-		$query = "SELECT * FROM USERS WHERE USER_EMAIL = ?";
+		$query = "SELECT * FROM USERS WHERE GOOGLE_EMAIL = ?";
 		$stmt = $this->conn->prepare($query);
 		$stmt->bind_param("s", $email);
 		if($stmt->execute()) {
 			$user = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
 				
+			return $user;
+		} else {
+			return NULL;
+		}
+	}
+	
+	/**
+	 * Get user by 카카오이메일
+	 */
+	public function getKakaoUserByEmail($email) {
+		$query = "SELECT * FROM USERS WHERE KAKATOK_EMAIL = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bind_param("s", $email);
+		if($stmt->execute()) {
+			$user = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+	
+			return $user;
+		} else {
+			return NULL;
+		}
+	}
+	
+	/**
+	 * Get user by 페북 이메일
+	 */
+	public function getFacebookUserByEmail($email) {
+		$query = "SELECT * FROM USERS WHERE FACEBOOK_EMAIL = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bind_param("s", $email);
+		if($stmt->execute()) {
+			$user = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+	
 			return $user;
 		} else {
 			return NULL;
@@ -169,6 +247,56 @@ class DB_Functions {
 	 */
 	public function isUserExistedWithGoogle($EMAIL) {
 		$stmt = $this->conn->prepare("SELECT GOOGLE_EMAIL from USERS WHERE GOOGLE_EMAIL = ?");
+		if ($stmt == FALSE) {
+			error_log($this->conn->error);
+			return false;
+		}
+		$stmt->bind_param("s", $EMAIL);
+		$stmt->execute();
+		$stmt->store_result();
+		if ($stmt->num_rows() > 0) {
+			// user existed
+			$stmt->close();
+			return true;
+		} else {
+			// user not existed
+			$stmt->close();
+			return false;
+		}
+	}
+	
+	/**
+	 * Check user is existed or not
+	 */
+	public function isUserExistedWithFacebook($EMAIL) {
+		$stmt = $this->conn->prepare("SELECT FACEBOOK_EMAIL from USERS WHERE FACEBOOK_EMAIL = ?");
+		if ($stmt == FALSE) {
+			error_log($this->conn->error);
+			return false;
+		}
+		$stmt->bind_param("s", $EMAIL);
+		$stmt->execute();
+		$stmt->store_result();
+		if ($stmt->num_rows() > 0) {
+			// user existed
+			$stmt->close();
+			return true;
+		} else {
+			// user not existed
+			$stmt->close();
+			return false;
+		}
+	}
+	
+	/**
+	 * Check user is existed or not
+	 */
+	public function isUserExistedWithKakao($EMAIL) {
+		$stmt = $this->conn->prepare("SELECT KAKATOK_EMAIL from USERS WHERE KAKATOK_EMAIL = ?");
+		if ($stmt == FALSE) {
+			error_log($this->conn->error);
+			return false;
+		}
 		$stmt->bind_param("s", $EMAIL);
 		$stmt->execute();
 		$stmt->store_result();

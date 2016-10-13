@@ -48,7 +48,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		}
 	}
 	
-} else if (isset($_POST['google_authcode']) && isset($_POST['idToken'])) {
+} else if (isset($_POST['google_authcode']) && isset($_POST['idToken'])) {	// 구글 로그인
 	
 	
 	
@@ -92,17 +92,15 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		// 	To exchange an authorization code for an access token, use the authenticate method:
 		//$client->authenticate($_POST['google_authcode']);
 		$token = $client->fetchAccessTokenWithAuthCode($_POST['google_authcode']);
-		error_log("test3 : ");
   		//$client->setAccessToken($token);
-		error_log("error_log : ");
-		error_log(print_r($token, true));
-		error_log("authCode : ".$_POST['google_authcode'], 0);
+// 		error_log("error_log : ");
+// 		error_log(print_r($token, true));
+// 		error_log("authCode : ".$_POST['google_authcode'], 0);
 		$access_token = $client->getAccessToken();
-		error_log("accesstoken : ".json_encode($access_token), 0);
-// 		$refresh_token = $client->refreshToken($access_token);
+		//error_log("accesstoken : ".json_encode($access_token), 0);
 		$refresh_token = $client->getRefreshToken();
-		error_log("refresh_token : ".$refresh_token, 0);
-		error_log("refresh_token array : ".json_encode($refresh_token), 0);
+		//error_log("refresh_token : ".$refresh_token, 0);
+		//error_log("refresh_token array : ".json_encode($refresh_token), 0);
 		
 		$email = getUserEmailFromToken($_POST['idToken'], $client);
 		
@@ -111,8 +109,9 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			// 로그인 시도
 			$user = $db->getGoogleUserByEmail($email);
 			$response["error"] = FALSE;
-			$response["user"]["email"] = $user["USER_EMAIL"];
+			$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
 			$response["user"]["created_at"] = $user["CREATED_AT"];
+			$response["user"]["updated_at"] = $user["UPDATED_AT"];
 			echo json_encode($response);
 		} else {
 			// create a new user
@@ -129,7 +128,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			if ($user) {
 				// user stored successfully
 				$response["error"] = FALSE;
-				$response["user"]["email"] = $user["USER_EMAIL"];
+				$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
 				$response["user"]["created_at"] = $user["CREATED_AT"];
 				$response["user"]["updated_at"] = $user["UPDATED_AT"];
 				echo json_encode($response);
@@ -145,6 +144,62 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		$response["error"] = TRUE;
 		$response["error_msg"] = "인증되지 않은 어플입니다.";
 		echo json_encode($response);
+	}
+} else if(isset($_POST['kakaoNickName'])) {
+	$email = $_POST['kakaoNickName'];
+	error_log($email);
+	if($db->isUserExistedWithKakao($email)) {
+		// 이미 유저가 있는 경우 
+		// 로그인 시도
+		$user = $db->getKakaoUserByEmail($email);
+		$response["error"] = FALSE;
+		$response["user"]["kakaoemail"] = $user["KAKATOK_EMAIL"];
+		$response["user"]["created_at"] = $user["CREATED_AT"];
+		$response["user"]["updated_at"] = $user["UPDATED_AT"];
+		echo json_encode($response);
+	} else {
+		$user = false;
+		$user = $db->storeUserWithKakaoNickName($email);
+		if ($user) {
+			// user stored successfully
+			$response["error"] = FALSE;
+			$response["user"]["kakaoemail"] = $user["KAKATOK_EMAIL"];
+			$response["user"]["created_at"] = $user["CREATED_AT"];
+			$response["user"]["updated_at"] = $user["UPDATED_AT"];
+			echo json_encode($response);
+		} else {
+			// user failed to store
+			$response["error"] = TRUE;
+			$response["error_msg"] .= "회원가입하는동안 알 수 없는 오류가 발생했습니다!";
+			echo json_encode($response);
+		}
+	}
+} else if(isset($_POST['facebookEMail'])) {
+	if($db->isUserExistedWithFacebook($email)) {
+		// 이미 유저가 있는 경우 
+		// 로그인 시도
+		$user = $db->getFacebookUserByEmail($email);
+		$response["error"] = FALSE;
+		$response["user"]["facebookemail"] = $user["FACEBOOK_EMAIL"];
+		$response["user"]["created_at"] = $user["CREATED_AT"];
+		$response["user"]["updated_at"] = $user["UPDATED_AT"];
+		echo json_encode($response);
+	} else {
+		$user = false;
+		$user = $db->storeUserWithFacebookEmail($email);
+		if ($user) {
+			// user stored successfully
+			$response["error"] = FALSE;
+			$response["user"]["facebookemail"] = $user["FACEBOOK_EMAIL"];
+			$response["user"]["created_at"] = $user["CREATED_AT"];
+			$response["user"]["updated_at"] = $user["UPDATED_AT"];
+			echo json_encode($response);
+		} else {
+			// user failed to store
+			$response["error"] = TRUE;
+			$response["error_msg"] .= "회원가입하는동안 알 수 없는 오류가 발생했습니다!";
+			echo json_encode($response);
+		}
 	}
 } else {
 	$response["error"] = TRUE;
