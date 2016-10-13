@@ -182,3 +182,23 @@
   182  apt -get install sendmail
   183  cd /var/www/html/
   184  history > history.txt
+  185  git add *.*
+  186  git commit -m "에러처리"
+  187  git commit -m "구글 이메일 로그인 에러처리"
+  188  git push
+  189  apt-get install sendmail
+  190  vi /etc/mail/local-host-names 
+  191  tailf /var/log/auth.log
+  192  iptables -L
+  193  tail -f /var/log/apache2/error.log 
+  194  cd /var/www/html
+  195  cd git
+  196  git add *.*
+  197  git commit -m "카톡 로그인됨"
+  198  git add *.*
+  199  git status
+  200  git add android_login_api/*
+  201  git status
+  202  git commit -m "카톡 로그인됨"
+  203  git push
+  204  history > history.txt
