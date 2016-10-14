@@ -7,11 +7,11 @@ $reponse = array("error" => FALSE);
 
 if (isset($_POST['email']) && isset($_POST['password'])) {
 	// receiving the post params
-	$email = $_POST['email'];
+	$facebookName = $_POST['email'];
 	$password = $_POST['password'];
 	
 	// get the user by email and password
-	$user = $db->getUserByEmailAndPassword($email, $password);
+	$user = $db->getUserByEmailAndPassword($facebookName, $password);
 	
 	if ($user != false) {
 		// user is found

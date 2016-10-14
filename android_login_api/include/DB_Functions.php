@@ -99,17 +99,17 @@ class DB_Functions {
 	}
 	
 	// 카카오톡
-	public function storeUserWithFacebookEmail($email) {
-		$stmt = $this->conn->prepare("INSERT INTO USERS(FACEBOOK_EMAIL, CREATED_AT) VALUES(?, NOW())");
-		$stmt->bind_param("s", $email);
+	public function storeUserWithFacebookIDAndName($id, $name) {
+		$stmt = $this->conn->prepare("INSERT INTO USERS(FACEBOOK_ID_NUM, FACEBOOK_USER_NAME, CREATED_AT) VALUES(?, ?, NOW())");
+		$stmt->bind_param("ss", $id, $name);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
 		$stmt->close();
 	
 		// check for successful store
 		if($result) {
-			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE FACEBOOK_EMAIL = ?");
-			$stmt->bind_param("s", $email);
+			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE FACEBOOK_ID_NUM = ?");
+			$stmt->bind_param("s", $id);
 			$stmt->execute();
 			$user = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
@@ -186,10 +186,10 @@ class DB_Functions {
 	/**
 	 * Get user by 페북 이메일
 	 */
-	public function getFacebookUserByEmail($email) {
-		$query = "SELECT * FROM USERS WHERE FACEBOOK_EMAIL = ?";
+	public function getFacebookUserByID($id) {
+		$query = "SELECT * FROM USERS WHERE FACEBOOK_ID_NUM = ?";
 		$stmt = $this->conn->prepare($query);
-		$stmt->bind_param("s", $email);
+		$stmt->bind_param("s", $id);
 		if($stmt->execute()) {
 			$user = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
@@ -270,13 +270,13 @@ class DB_Functions {
 	/**
 	 * Check user is existed or not
 	 */
-	public function isUserExistedWithFacebook($EMAIL) {
-		$stmt = $this->conn->prepare("SELECT FACEBOOK_EMAIL from USERS WHERE FACEBOOK_EMAIL = ?");
+	public function isUserExistedWithFacebookID($ID) {
+		$stmt = $this->conn->prepare("SELECT FACEBOOK_ID_NUM from USERS WHERE FACEBOOK_ID_NUM = ?");
 		if ($stmt == FALSE) {
 			error_log($this->conn->error);
 			return false;
 		}
-		$stmt->bind_param("s", $EMAIL);
+		$stmt->bind_param("s", $ID);
 		$stmt->execute();
 		$stmt->store_result();
 		if ($stmt->num_rows() > 0) {

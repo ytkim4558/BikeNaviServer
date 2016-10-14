@@ -21,18 +21,18 @@ $response = array("error" => FALSE);
 // 자체 회원가입
 if (isset($_POST['email']) && isset($_POST['password'])) {
 	// receiving the post params
-	$email = $_POST['email'];
+	$facebookName = $_POST['email'];
 	$password = $_POST['password'];
 	
 	// check if user is already existed with the same email
-	if ($db->isUserExisted($email)) {
+	if ($db->isUserExisted($facebookName)) {
 		// user already existed
 		$response["error"] = TRUE;
-		$response["error_msg"] = "이미 " . $email . "로 가입한 회원이 있습니다. " ;
+		$response["error_msg"] = "이미 " . $facebookName . "로 가입한 회원이 있습니다. " ;
 		echo json_encode($response);
 	} else {
 		// create a new user
-		$user = $db->storeUser($email, $password);
+		$user = $db->storeUser($facebookName, $password);
 		if ($user) {
 			// user stored successfully
 			$response["error"] = FALSE;
@@ -102,12 +102,12 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		//error_log("refresh_token : ".$refresh_token, 0);
 		//error_log("refresh_token array : ".json_encode($refresh_token), 0);
 		
-		$email = getUserEmailFromToken($_POST['idToken'], $client);
+		$facebookName = getUserEmailFromToken($_POST['idToken'], $client);
 		
-		if ($db->isUserExistedWithGoogle($email)) {
+		if ($db->isUserExistedWithGoogle($facebookName)) {
 			// user already existed 
 			// 로그인 시도
-			$user = $db->getGoogleUserByEmail($email);
+			$user = $db->getGoogleUserByEmail($facebookName);
 			$response["error"] = FALSE;
 			$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
 			$response["user"]["created_at"] = $user["CREATED_AT"];
@@ -119,7 +119,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			// 나중에 활용가능? : 주석 처리 액세스 토큰과 리프레시 토큰을 활용할 때 구현하도록 한다. 현재로서는 유저 이메일만 가져오면 됨.
 // 나중에 활용가능? 			if(isset($access_token) && isset($refresh_token) ) {
 // 나중에 활용가능?				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($email, json_encode($access_token), json_encode($refresh_token));
-				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($email, json_encode($access_token), json_encode($refresh_token));
+				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($facebookName, json_encode($access_token), json_encode($refresh_token));
 			//$user = $db->storeUserWithGoogleEmail($email);
 // 나중에 활용가능?			} else {
 // 나중에 활용가능?				$user = false;
@@ -177,24 +177,25 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			echo json_encode($response);
 		}
 	}
-} else if(isset($_POST['facebookEmail'])) {
-	$email = $_POST['facebookEmail'];
-	if($db->isUserExistedWithFacebook($email)) {
+} else if(isset($_POST['facebookName']) && isset($_POST['facebookID'])) {
+	$facebookID = $_POST['facebookID'];
+	$facebookName = $_POST['facebookName'];
+	if($db->isUserExistedWithFacebookID($facebookID)) {
 		// 이미 유저가 있는 경우 
 		// 로그인 시도
-		$user = $db->getFacebookUserByEmail($email);
+		$user = $db->getFacebookUserByID($facebookID);
 		$response["error"] = FALSE;
-		$response["user"]["facebookemail"] = $user["FACEBOOK_EMAIL"];
+		$response["user"]["facebookName"] = $user["FACEBOOK_USER_NAME"];
 		$response["user"]["created_at"] = $user["CREATED_AT"];
 		$response["user"]["updated_at"] = $user["UPDATED_AT"];
 		echo json_encode($response);
 	} else {
 		$user = false;
-		$user = $db->storeUserWithFacebookEmail($email);
+		$user = $db->storeUserWithFacebookIDAndName($facebookID, $facebookName);
 		if ($user) {
 			// user stored successfully
 			$response["error"] = FALSE;
-			$response["user"]["facebookemail"] = $user["FACEBOOK_EMAIL"];
+			$response["user"]["facebookName"] = $user["FACEBOOK_USER_NAME"];
 			$response["user"]["created_at"] = $user["CREATED_AT"];
 			$response["user"]["updated_at"] = $user["UPDATED_AT"];
 			echo json_encode($response);
