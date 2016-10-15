@@ -240,3 +240,14 @@
   240  git add *.*
   241  git status
   242  history > history.txt
+  243  git status
+  244  git add *.*
+  245  git status
+  246  git commit -m "db 백업"
+  247  git push
+  248  git status
+  249  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  250  git status
+  251  git add *.*
+  252  git commit -m "utf8mb4 형태로 db 수정"
+  253  history > history.txt
