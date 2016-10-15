@@ -52,20 +52,20 @@ DROP TABLE IF EXISTS `USERS`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `USERS` (
   `USER_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '회원 넘버',
-  `USER_EMAIL` varchar(100) DEFAULT NULL COMMENT '자체회원 이메일',
-  `GOOGLE_EMAIL` varchar(100) DEFAULT NULL COMMENT '구글로 가입한 사람 이메일',
-  `KAKAO_ID` varchar(100) DEFAULT NULL COMMENT '카카오톡id, long타입 변수이나 string으로 변환해서 넘겨옴',
-  `KAKAO_NICK_NAME` varchar(100) DEFAULT NULL COMMENT '카카오톡으로 가입한 사람 닉네임 ',
-  `FACEBOOK_ID_NUM` varchar(100) DEFAULT NULL COMMENT '페이스북 아이디 번호(숫자)',
-  `FACEBOOK_USER_NAME` varchar(100) DEFAULT NULL COMMENT '페이스북으로 가입한 사람 이름 ',
-  `USER_PW` varchar(80) DEFAULT NULL COMMENT '자체회원가입 비밀번호',
-  `SALT` varchar(10) DEFAULT NULL COMMENT 'base64암호화에 보안을 강화하기위해 첨부',
+  `USER_EMAIL` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '자체회원 이메일',
+  `GOOGLE_EMAIL` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '구글로 가입한 사람 이메일',
+  `KAKAO_ID` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '카카오톡id, long타입 변수이나 string으로 변환해서 넘겨옴',
+  `KAKAO_NICK_NAME` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '카카오톡으로 가입한 사람 닉네임 ',
+  `FACEBOOK_ID_NUM` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '페이스북 아이디 번호(숫자)',
+  `FACEBOOK_USER_NAME` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '페이스북으로 가입한 사람 이름 ',
+  `USER_PW` varchar(80) CHARACTER SET utf8 DEFAULT NULL COMMENT '자체회원가입 비밀번호',
+  `SALT` varchar(10) CHARACTER SET utf8 DEFAULT NULL COMMENT 'base64암호화에 보안을 강화하기위해 첨부',
   `CREATED_AT` datetime NOT NULL COMMENT '생성 시각 ',
   `UPDATED_AT` datetime DEFAULT NULL COMMENT '업데이트 시각',
-  `GOOGLE_ACCESS_TOKEN` text COMMENT '구글 액세스 토큰',
-  `GOOGLE_REFRESH_TOKEN` varchar(100) DEFAULT NULL COMMENT '구글 refresh 토큰 ',
+  `GOOGLE_ACCESS_TOKEN` text CHARACTER SET utf8 COMMENT '구글 액세스 토큰',
+  `GOOGLE_REFRESH_TOKEN` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '구글 refresh 토큰 ',
   PRIMARY KEY (`USER_NO`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COMMENT='유저정보';
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COMMENT='유저정보';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,9 +88,9 @@ DROP TABLE IF EXISTS `USER_SEARCH_POI_TB`;
 CREATE TABLE `USER_SEARCH_POI_TB` (
   `POI_NO` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '장소번호',
   `USER_NO` bigint(20) DEFAULT NULL COMMENT '유저번호',
-  `POI_NAME` varchar(100) NOT NULL COMMENT '장소 이름',
+  `POI_NAME` varchar(100) CHARACTER SET utf8 NOT NULL COMMENT '장소 이름',
   PRIMARY KEY (`POI_NO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='유저가 검색한 장소 테이블';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='유저가 검색한 장소 테이블';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,4 +111,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-15 16:16:36
+-- Dump completed on 2016-10-15 16:21:21
