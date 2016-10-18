@@ -98,7 +98,54 @@ class DB_Functions {
 		}
 	}
 	
-	// 카카오톡
+	// 카카오톡 닉네임 가져옴.
+	public function getUserNickNameWithKakaoID($id) {
+		$stmt = $this->conn->prepare("SELECT KAKAO_NICK_NAME FROM USERS WHERE KAKAO_ID = ?");
+		$stmt->bind_param("s", $id);
+		$stmt->execute();
+		$stmt->bind_result($kakaoNick);
+		$stmt->fetch();
+		$stmt->close();
+
+		return $kakaoNick;
+	}
+	
+	// 카카오톡 아이디,비밀번호 다르게 변경되었는지 조사
+	public function isUserChangedWithKakaoIDAndNickName($id, $nickname) {
+		// 먼저 정보를 가져옴.
+		$kakaoNick = $this->getUserNickNameWithKakaoID($id);
+		error_log("kakaonick : " . $nickname);
+		error_log("nick : " . $kakaoNick);
+		if($nickname === $kakaoNick) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	// 카카오톡 업데이트
+	public function updateUserWithKakaoIDAndNickName($id, $nickname) {
+		$stmt = $this->conn->prepare("UPDATE USERS SET KAKAO_NICK_NAME = ?, UPDATED_AT = NOW() WHERE KAKAO_ID = ?");
+		$stmt->bind_param("ss", $nickname, $id);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM USERS WHERE KAKAO_ID = ?");
+			$stmt->bind_param("s", $id);
+			$stmt->execute();
+			$user = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+	
+			return $user;
+		} else {
+			return false;
+		}
+	}
+	
+	// 페이스북
 	public function storeUserWithFacebookIDAndName($id, $name) {
 		$stmt = $this->conn->prepare("INSERT INTO USERS(FACEBOOK_ID_NUM, FACEBOOK_USER_NAME, CREATED_AT) VALUES(?, ?, NOW())");
 		$stmt->bind_param("ss", $id, $name);

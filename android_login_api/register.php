@@ -153,8 +153,16 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	error_log("kakaonick : " . $kakatotalknickname);
 	if($db->isUserExistedWithKakao($kakaoID)) {
 		// 이미 유저가 있는 경우 
-		// 로그인 시도
-		$user = $db->getKakaoUserByID($kakaoID);
+
+		if($db->isUserChangedWithKakaoIDAndNickName($kakaoID, $kakatotalknickname)) {
+			// 변경된 데이터가 있는 경우
+			// db 업데이트
+			$user = $db->updateUserWithKakaoIDAndNickName($kakaoID, $kakatotalknickname);
+		} else {
+			// 변경된 데이터가 없는 경우
+			// 로그인 시도
+			$user = $db->getKakaoUserByID($kakaoID);
+		}
 		$response["error"] = FALSE;
 		$response["user"]["kakaonickname"] = $user["KAKAO_NICK_NAME"];
 		$response["user"]["created_at"] = $user["CREATED_AT"];
