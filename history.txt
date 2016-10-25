@@ -251,3 +251,47 @@
   251  git add *.*
   252  git commit -m "utf8mb4 형태로 db 수정"
   253  history > history.txt
+  254  git add *.*
+  255  git commit -m "utf8mb4 형태로 db 수정"
+  256  git push
+  257  tail -f /var/log/apache2/error.log
+  258  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  259  cd /var/www/html/
+  260  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  261  git add android_login_api/*
+  262  git add *.*
+  263  git status
+  264  git commit "카카오톡 db 업데이트 쿼리 작성"
+  265  git commit -m "카카오톡 db 업데이트 쿼리 작성"
+  266  git status
+  267  git push
+  268  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  269  git status
+  270  git add *.*
+  271  git status
+  272  git commit -m "db 재업로드"
+  273  git status
+  274  tail -f /var/log/apache2/error.log
+  275  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  276  git status
+  277  git add *.*
+  278  git diff
+  279  git add *.*
+  280  git status
+  281  git commit -m "파일 변경 확인"
+  282  git push
+  283  tail -f /var/log/apache2/error.log
+  284  cd /var/www/html
+  285  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  286  git add BIKENAVI.sql 
+  287  git status
+  288  git diff
+  289  git commit -m "유저별 테이블 변경"
+  290  git push
+  291  show create database BIKENAVI
+  292  mysql -uroot -p
+  293  vim /etc/mysql/my.cnff
+  294  vim /etc/mysql/my.cnf
+  295  tail -f /var/log/apache2/error.log
+  296  cd /var/www/html
+  297  history > history.txt 
