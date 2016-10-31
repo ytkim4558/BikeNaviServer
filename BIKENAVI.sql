@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.15, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.16, for Linux (x86_64)
 --
 -- Host: localhost    Database: BIKENAVI
 -- ------------------------------------------------------
--- Server version	5.7.15-0ubuntu0.16.04.1
+-- Server version	5.7.16-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,11 +25,13 @@ DROP TABLE IF EXISTS `POI_TB`;
 CREATE TABLE `POI_TB` (
   `POI_NO` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '장소번호',
   `POI_NAME` varchar(100) NOT NULL COMMENT '장소 이름',
+  `POI_ADDRESS` varchar(100) DEFAULT NULL COMMENT '장소 주소',
   `POI_LAT_LNG` varchar(100) NOT NULL COMMENT '장소 좌표',
   `CREATED_AT` datetime NOT NULL COMMENT '생성한 시각',
   `UPDATED_AT` datetime NOT NULL COMMENT '사용한 시각',
   `LAST_USED_AT` datetime NOT NULL COMMENT '마지막에 사용한 시각',
-  PRIMARY KEY (`POI_NO`)
+  PRIMARY KEY (`POI_NO`),
+  KEY `POI_LAT_LNG` (`POI_LAT_LNG`,`LAST_USED_AT`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='장소 테이블';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -51,12 +53,9 @@ DROP TABLE IF EXISTS `TRACK_TB`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `TRACK_TB` (
   `TRACK_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '트랙 번호',
-  `START_POI_NAME` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '출발지 이름',
-  `START_POI_LAT_LNG` char(10) DEFAULT NULL COMMENT '출발지 위도 경도 (,로 구분)',
-  `DEST_POI_NAME` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '도착지 이름',
-  `DEST_POI_LAT_LNG` char(10) DEFAULT NULL COMMENT '도착지 위도 경도',
-  `COORDINATE_LIST` text CHARACTER SET utf8 NOT NULL COMMENT '좌표 리스트 (위도, 경도의 리스트 형태로 저장됨)',
-  `MARKER_COORDINATE_LIST` text COMMENT '마커(좌회전, 직진 표시등)가 있는 좌표들 리스트',
+  `START_POI_NO` tinyint(20) NOT NULL COMMENT '출발지 번호 ',
+  `DEST_POI_NO` bigint(20) NOT NULL COMMENT '도착지 번호',
+  `STOP_POI_NO_ARRAY` text COMMENT '경유지 번호 리스트',
   `CREATED_AT` datetime NOT NULL COMMENT '생성 시각',
   `UPDATED_AT` datetime NOT NULL COMMENT '정보 수정한 시각',
   `LAST_USED_AT` datetime NOT NULL COMMENT '마지막에 사용한 시각',
@@ -224,4 +223,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-25 15:53:30
+-- Dump completed on 2016-10-31 15:54:29
