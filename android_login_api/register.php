@@ -3,7 +3,6 @@
 require_once 'include/DB_Functions.php';
 require_once '../vendor/autoload.php';
 $db = new DB_Functions();
-error_log("hihi");
 // 구글 유저 확인 .참고 : https://developers.google.com/api-client-library/php/guide/aaa_idtoken
 // 재참고 : https://github.com/google/google-api-php-client/blob/master/UPGRADING.md
 function getUserEmailFromToken($idToken, $client) {
@@ -102,12 +101,12 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		//error_log("refresh_token : ".$refresh_token, 0);
 		//error_log("refresh_token array : ".json_encode($refresh_token), 0);
 		
-		$facebookName = getUserEmailFromToken($_POST['idToken'], $client);
+		$googleemail = getUserEmailFromToken($_POST['idToken'], $client);
 		
-		if ($db->isUserExistedWithGoogle($facebookName)) {
+		if ($db->isUserExistedWithGoogle($googleemail)) {
 			// user already existed 
 			// 로그인 시도
-			$user = $db->getGoogleUserByEmail($facebookName);
+			$user = $db->getGoogleUserByEmail($googleemail);
 			$response["error"] = FALSE;
 			$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
 			$response["user"]["created_at"] = $user["CREATED_AT"];
@@ -119,7 +118,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			// 나중에 활용가능? : 주석 처리 액세스 토큰과 리프레시 토큰을 활용할 때 구현하도록 한다. 현재로서는 유저 이메일만 가져오면 됨.
 // 나중에 활용가능? 			if(isset($access_token) && isset($refresh_token) ) {
 // 나중에 활용가능?				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($email, json_encode($access_token), json_encode($refresh_token));
-				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($facebookName, json_encode($access_token), json_encode($refresh_token));
+				$user = $db->storeUserWithGoogleEmailnAccessTokennRefreshToken($googleemail, json_encode($access_token), json_encode($refresh_token));
 			//$user = $db->storeUserWithGoogleEmail($email);
 // 나중에 활용가능?			} else {
 // 나중에 활용가능?				$user = false;

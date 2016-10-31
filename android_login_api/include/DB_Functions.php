@@ -29,7 +29,7 @@ class DB_Functions {
 		$encrypted_password = $hash["encrypted"]; // encrypted password
 		$salt = $hash["salt"]; // salt
 		
-		$stmt = $this->conn->prepare("INSERT INTO USERS(USER_EMAIL, USER_PW, SALT, CREATED_AT) VALUES(?, ?, ?, NOW())");
+		$stmt = $this->conn->prepare("INSERT INTO USERS(USER_EMAIL, USER_PW, SALT, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, ?, NOW(), NOW(), NOW())");
 		$stmt->bind_param("sss", $email, $encrypted_password, $salt);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
@@ -290,6 +290,202 @@ class DB_Functions {
 			return false;
 		}
 	}
+	
+	/**
+	 * Storing new poi
+	 * return poi details
+	 */
+	public function storePOI($poiLatLng, $poiName) {
+		$stmt = $this->conn->prepare("INSERT INTO POI_TB(POI_NAME, POI_LAT_LNG, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
+		$stmt->bind_param("ss", $poiName, $poiLatLng);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT LAST_USED_AT FROM POI_TB WHERE POI_LAT_LNG = ?");
+			$stmt->bind_param("s", $poiLatLng);
+			$stmt->execute();
+			$user = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+				
+			return $user;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Check poi is existed or not
+	 */
+	public function isPOIExisted($poiLatLng) {
+		$stmt = $this->conn->prepare("SELECT POI_LAT_LNG from POI_TB WHERE POI_LAT_LNG = ?");
+		$stmt->bind_param("s", $poiLatLng);
+		$stmt->execute();
+		$stmt->store_result();
+		if ($stmt->num_rows() > 0) {
+			// user existed
+			$stmt->close();
+			return true;
+		} else {
+			// user not existed
+			$stmt->close();
+			return false;
+		}
+	}
+	
+	// POI 정보 업데이트
+	public function updatePOINameWithPOI_LAT_LNG($poiName, $poiLatLng) {
+		$stmt = $this->conn->prepare("UPDATE POI_TB SET POI_NAME = ?, UPDATED_AT = NOW() WHERE POI_LAT_LNG = ?");
+		$stmt->bind_param("ss", $poiName, $poiLatLng);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM POI_TB WHERE POI_LAT_LNG = ?");
+			$stmt->bind_param("s", $poiLatLng);
+			if($stmt->execute()) {
+				$poi = $stmt->get_result()->fetch_assoc();
+				$stmt->close();
+	
+				return $poi;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	// POI 사용시각 업데이트
+	public function updateLASTUSEDPOIWithPOI_LAT_LNG($poiLatLng) {
+		$stmt = $this->conn->prepare("UPDATE POI_TB SET LAST_USED_AT = NOW() WHERE POI_LAT_LNG = ?");
+		$stmt->bind_param("s", $poiLatLng);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM POI_TB WHERE POI_LAT_LNG = ?");
+			$stmt->bind_param("s", $poiLatLng);
+			if($stmt->execute()) {
+				$poi = $stmt->get_result()->fetch_assoc();
+				$stmt->close();
+		
+				return $poi;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * @param $poiLatLng : 장소
+	 * @return poi 배열
+	 */
+	public function getPOIByPoiLatLng($poiLatLng) {
+		$query = "SELECT * FROM POI_TB WHERE POI_LAT_LNG = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bind_param("s", $poiLatLng);
+		if($stmt->execute()) {
+			$poi = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+			return $poi;
+		} else {
+			return NULL;
+		}
+	}
+	
+	/** USER POI TB
+	 * 
+	 */
+	
+	/**
+	 * Storing new user_poi
+	 * return user_poi details
+	 */
+	public function storeUSERPOI($userNo, $poiNo) {
+		$stmt = $this->conn->prepare("INSERT INTO USER_POI_TB(USER_NO, POI_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
+		$stmt->bind_param("ss", $userNo, $poiNo);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM USER_POI_TB WHERE WHERE USER_NO = ? AND POI_NO = ?");
+			$stmt->bind_param("ss", $userNo, $poiNo);
+			$stmt->execute();
+			$user_poi = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+	
+			return $user_poi;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Check user_poi is existed or not
+	 */
+	public function isUSER_POIExisted($userNo, $poiNo) {
+		$stmt = $this->conn->prepare("SELECT USER_NO from USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
+		$stmt->bind_param("ss", $userNo, $poiNo);
+		$stmt->execute();
+		$stmt->store_result();
+		if ($stmt->num_rows() > 0) {
+			// user existed
+			$stmt->close();
+			return true;
+		} else {
+			// user not existed
+			$stmt->close();
+			return false;
+		}
+	}
+	
+	// USER_POI 업데이트
+	public function updateUSREPOILastUsedWithUSER_NOandPOI_NO($userNo, $poiNo) {
+		$stmt = $this->conn->prepare("UPDATE USER_POI_TB SET LAST_USED_AT = NOW() WHERE USER_NO = ? AND POI_NO = ?");
+		$stmt->bind_param("ss", $userNo, $poiNo);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT LAST_USED_AT FROM USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
+			$stmt->bind_param("ss", $userNo, $poiNo);
+			if($stmt->execute()) {
+				$userpoi = $stmt->get_result()->fetch_assoc();
+				$stmt->close();
+	
+				return $userpoi;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * @param $poiLatLng : 장소
+	 * @return poi 배열
+	 */
+	public function getUSERPOIByPoiLatLng($userNo, $poiNo) {
+		$query = "SELECT * FROM USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bind_param("ss", $userNo, $poiNo);
+		if($stmt->execute()) {
+			$userpoi = $stmt->get_result()->fetch_assoc();
+			$stmt->close();
+			return $userpoi;
+		} else {
+			return NULL;
+		}
+	}
+	
 	
 	/**
 	 * Check user is existed or not
