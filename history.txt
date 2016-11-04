@@ -295,3 +295,93 @@
   295  tail -f /var/log/apache2/error.log
   296  cd /var/www/html
   297  history > history.txt 
+  298  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  299  git add *.*
+  300  git status
+  301  git diff
+  302  git commit -m "db 업데이트"
+  303  git push
+  304  cd /var/www/html
+  305  git status
+  306  git diff
+  307  git add *.*
+  308  git status
+  309  git add *.*
+  310  git status
+  311  git add android_login_api/*
+  312  git status
+  313  git add android_login_api/*
+  314  git status
+  315  git commit -m "장소 db"
+  316  git push
+  317  mysqldump -uroot -p BIKENAVI > BIKENAVI.sql
+  318  git add *.*
+  319  git status
+  320  git commit -m "db 수정"
+  321  git push
+  322  git status
+  323  git mv android_login_api/register_poi.php android_login_api/register_user_poi.php
+  324  git status
+  325  git commit -m "파일이름 변경"
+  326  git push
+  327  tail -f /var/log/apache2/error.log
+  328  cd /var/www/html
+  329  ls
+  330  git add *.*
+  331  git status
+  332  git add android_login_api/*
+  333  git status
+  334  git commit -m "유저정보에 따른 poi,track만들기"
+  335  git push
+  336  tail -f /var/log/apache2/error.log
+  337  cd /var/www/html
+  338  git status
+  339  git revert
+  340  git reset --hard HEAD
+  341  git status
+  342  git reset --hard HEAD
+  343  git reset --hard origin/master
+  344  git status
+  345  cd /var/www/html
+  346  tail -f /var/log/apache2/error.log
+  347  cd /var/www/html
+  348  ls
+  349  tail -f /var/log/apache2/error.log
+  350  cd /var/www/html
+  351  tail -f /var/log/apache2/error.log
+  352  cd /var/www/html
+  353  cd /var/log/apache2/
+  354  cd /var/www/html
+  355  tail -f /var/log/apache2/error.log
+  356  cd /var/www/html
+  357  ls
+  358  tail -f /var/log/apache2/error.log
+  359  cd /var/www/html
+  360  tail -f /var/log/apache2/error.log
+  361  cd /var/www/html
+  362  tail -f /var/log/apache2/error.log
+  363  ls
+  364  cd /var/www/html
+  365  ls
+  366  cd /
+  367  cd home
+  368  ls
+  369  cd /var/www/html
+  370  cd ~
+  371  ls
+  372  rm BIKENAVI.sql 
+  373  ls
+  374  cd /var/www/html
+  375  ls
+  376  ls -al
+  377  tail -f /var/log/apache2/error.log
+  378  cd /var/www/html
+  379  tail -f /var/log/apache2/error.log
+  380  git add *.*
+  381  git android_login_api/*
+  382  git add android_login_api/*
+  383  git status
+  384  git commit -m "장소 및 즐겨찾기 리스트뷰 주고 받기 만드는중"
+  385  git status
+  386  git push
+  387  history > history.txt
