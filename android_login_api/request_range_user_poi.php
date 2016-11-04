@@ -56,7 +56,7 @@ if(isset($user)) {
 		$start = 0;
 		
 		// 페이징하기 위한 리스트뷰 아이템 개수
-		$limit = 3;
+		$limit = 7;
 		
 		// 최대 갈 수 있는 페이지
 		$page_limit = ceil($total/$limit);

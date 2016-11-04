@@ -617,7 +617,7 @@ class DB_Functions {
 	
 			}
 			$stmt->close();
-			return json_encode($res);
+			return $res;
 		} else {
 			return NULL;
 		}
@@ -715,7 +715,7 @@ class DB_Functions {
 					// POI_TB : 경로 테이블
 					$query = "SELECT * FROM POI_TB WHERE POI_NO = ?";
 					$stmt2 = $this->conn->prepare($query);
-					$stmt2->bind_param("i", $user_poi_row['NO']);
+					$stmt2->bind_param("i", $user_poi_row['POI_NO']);
 					if($stmt2->execute()) {
 						$poi = $stmt2->get_result()->fetch_assoc();
 						error_log(json_encode($poi));
@@ -734,7 +734,7 @@ class DB_Functions {
 				error_log("get_result is nothing?");
 			}
 			$stmt->close();
-			return json_encode($res);
+			return $res;
 		} else {
 			return NULL;
 		}
