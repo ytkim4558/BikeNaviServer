@@ -19,6 +19,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		$response["user"]["email"] = $user["USER_EMAIL"];
 		$response["user"]["created_at"] = $user["CREATED_AT"];
         $response["user"]["updated_at"] = $user["UPDATED_AT"];
+        $response["user"]["last_used_at"] = $user["LAST_USED_AT"];
         echo json_encode($response);
 	} else {
 		// user is not found with the credentials (자격)

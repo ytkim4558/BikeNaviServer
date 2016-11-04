@@ -34,10 +34,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		$user = $db->storeUser($facebookName, $password);
 		if ($user) {
 			// user stored successfully
-			$response["error"] = FALSE;
-			$response["user"]["email"] = $user["USER_EMAIL"];
-			$response["user"]["created_at"] = $user["CREATED_AT"];
-			$response["user"]["updated_at"] = $user["UPDATED_AT"];
+			$response = save_bikenavi($response, $user);
 			echo json_encode($response);
 		} else {
 			// user failed to store
@@ -48,9 +45,6 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	}
 	
 } else if (isset($_POST['google_authcode']) && isset($_POST['idToken'])) {	// 구글 로그인
-	
-	
-	
 	// 구글 로그인
 	// 참고 : https://developers.google.com/api-client-library/php/auth/web-app
 	// https://developers.google.com/identity/sign-in/android/offline-access
@@ -107,10 +101,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			// user already existed 
 			// 로그인 시도
 			$user = $db->getGoogleUserByEmail($googleemail);
-			$response["error"] = FALSE;
-			$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
-			$response["user"]["created_at"] = $user["CREATED_AT"];
-			$response["user"]["updated_at"] = $user["UPDATED_AT"];
+			$response = save_google($response, $user);
 			echo json_encode($response);
 		} else {
 			// create a new user
@@ -127,10 +118,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 // 나중에 활용가능?			}
 			if ($user) {
 				// user stored successfully
-				$response["error"] = FALSE;
-				$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
-				$response["user"]["created_at"] = $user["CREATED_AT"];
-				$response["user"]["updated_at"] = $user["UPDATED_AT"];
+				$response = save_google($response, $user);
 				echo json_encode($response);
 			} else {
 				// user failed to store
@@ -162,20 +150,14 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 			// 로그인 시도
 			$user = $db->getKakaoUserByID($kakaoID);
 		}
-		$response["error"] = FALSE;
-		$response["user"]["kakaonickname"] = $user["KAKAO_NICK_NAME"];
-		$response["user"]["created_at"] = $user["CREATED_AT"];
-		$response["user"]["updated_at"] = $user["UPDATED_AT"];
+		$response = save_kakao($response, $user);
 		echo json_encode($response);
 	} else {
 		$user = false;
 		$user = $db->storeUserWithKakaoIDAndNickName($kakaoID, $kakatotalknickname);
 		if ($user) {
 			// user stored successfully
-			$response["error"] = FALSE;
-			$response["user"]["kakaonickname"] = $user["KAKAO_NICK_NAME"];
-			$response["user"]["created_at"] = $user["CREATED_AT"];
-			$response["user"]["updated_at"] = $user["UPDATED_AT"];
+			$response = save_kakao($response, $user);
 			echo json_encode($response);
 		} else {
 			// user failed to store
@@ -191,20 +173,14 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		// 이미 유저가 있는 경우 
 		// 로그인 시도
 		$user = $db->getFacebookUserByID($facebookID);
-		$response["error"] = FALSE;
-		$response["user"]["facebookName"] = $user["FACEBOOK_USER_NAME"];
-		$response["user"]["created_at"] = $user["CREATED_AT"];
-		$response["user"]["updated_at"] = $user["UPDATED_AT"];
+		$response = save_facebook($response, $user);
 		echo json_encode($response);
 	} else {
 		$user = false;
 		$user = $db->storeUserWithFacebookIDAndName($facebookID, $facebookName);
 		if ($user) {
 			// user stored successfully
-			$response["error"] = FALSE;
-			$response["user"]["facebookName"] = $user["FACEBOOK_USER_NAME"];
-			$response["user"]["created_at"] = $user["CREATED_AT"];
-			$response["user"]["updated_at"] = $user["UPDATED_AT"];
+			$response = save_facebook($response, $user);
 			echo json_encode($response);
 		} else {
 			// user failed to store
@@ -217,5 +193,37 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	$response["error"] = TRUE;
 	$response["error_msg"] = "필수 항목인 이메일이나 비밀번호가 누락되었습니다!";
 	echo json_encode($response);
+}
+function save_bikenavi($response, $user) {
+	$response = save_date($response, $user);
+	$response["error"] = FALSE;
+	$response["user"]["email"] = $user["USER_EMAIL"];
+	return $response;
+}
+function save_google($response, $user) {
+	$response = save_date($response, $user);
+	$response["error"] = FALSE;
+	$response["user"]["googleemail"] = $user["GOOGLE_EMAIL"];
+	return $response;
+}
+function save_kakao($response, $user) {
+	$response = save_date($response, $user);
+	$response["error"] = FALSE;
+	$response["user"]["kakaonickname"] = $user["KAKAO_NICK_NAME"];
+	$response["user"]["kakaoid"] = $user["KAKAO_ID"];
+	return $response;
+}
+function save_facebook($response, $user) {
+	$response = save_date($response, $user);
+	$response["error"] = FALSE;
+	$response["user"]["facebookName"] = $user["FACEBOOK_USER_NAME"];
+	$response["user"]["facebookID"] = $user["FACEBOOK_ID_NUM"];
+	return $response;
+}
+function save_date($response, $user) {
+	$response["user"]["created_at"] = $user["CREATED_AT"];
+	$response["user"]["updated_at"] = $user["UPDATED_AT"];
+	$response["user"]["last_used_at"] = $user["LAST_USED_AT"];
+	return $response;
 }
 ?>
