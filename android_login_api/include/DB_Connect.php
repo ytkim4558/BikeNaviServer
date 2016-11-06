@@ -1,10 +1,11 @@
-<?php 
+<?php
+require_once 'DB_Config.php';
+
 class DB_Connect {
 	private $conn;
 	
 	// Connecting to database
 	public function connect() {
-		require_once 'include/DB_Config.php';
 		
 		// Connecting to mysql database
 		$this->conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);

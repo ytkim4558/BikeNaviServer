@@ -5,7 +5,7 @@ require_once '../vendor/autoload.php';
 $db = new DB_Functions();
 // 구글 유저 확인 .참고 : https://developers.google.com/api-client-library/php/guide/aaa_idtoken
 // 재참고 : https://github.com/google/google-api-php-client/blob/master/UPGRADING.md
-function getUserEmailFromToken($idToken, $client) {
+function getGoogleEmailFromToken($idToken, $client) {
 	$userData = $client->verifyIdToken($idToken);
 	if ($userData) {
 		//return $data['payload']['sub']; // user ID
@@ -78,7 +78,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	
 	// 참고 : https://developers.google.com/api-client-library/php/guide/aaa_idtoken
 	// 구글서버에다 인증 받은 회원인지 확인
-	if (getUserEmailFromToken($idToken, $client) != false) {
+	if (getGoogleEmailFromToken($idToken, $client) != false) {
 		// 인증 받은 경우라면
 		error_log("test2 : ");
 		// 	After the web server receives the authorization code, it can exchange the authorization code for an access token.
@@ -95,7 +95,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 		//error_log("refresh_token : ".$refresh_token, 0);
 		//error_log("refresh_token array : ".json_encode($refresh_token), 0);
 		
-		$googleemail = getUserEmailFromToken($_POST['idToken'], $client);
+		$googleemail = getGoogleEmailFromToken($_POST['idToken'], $client);
 		
 		if ($db->isUserExistedWithGoogle($googleemail)) {
 			// user already existed 

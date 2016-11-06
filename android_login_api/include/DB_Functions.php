@@ -447,7 +447,7 @@ class DB_Functions {
 	 * @return array|boolean
 	 */
 	public function deleteUSERPOIAtUserPOI($userNo, $poiNo) {
-		$stmt = $this->conn->prepare("DELETE USER_POI_TB WHERE POI_NO = ? AND USER_NO = ?");
+		$stmt = $this->conn->prepare("DELETE FROM USER_POI_TB WHERE POI_NO = ? AND USER_NO = ?");
 		$stmt->bind_param("ii", $poiNo, $userNo);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
@@ -455,7 +455,7 @@ class DB_Functions {
 	
 		// check for successful delete
 		if($result) {
-			true;
+			return true;
 		} else {
 			return false;
 		}
@@ -464,8 +464,8 @@ class DB_Functions {
 	// USER_TRACK 정보 업데이트
 	/**
 	 *
-	 * @param int $userNo	: 유저 번호
-	 * @param int $poiNo	: 장소 번호
+	 * @param int $userNo 유저 번호
+	 * @param int $trackNo 장소 번호
 	 * @return array|boolean
 	 */
 	public function updateLastUsedAtUserTrack($userNo, $trackNo) {
@@ -718,8 +718,8 @@ class DB_Functions {
 	}
 	
 	/**
-	 * @param $usreNo : 유저아이디
-	 * @return 유저가 검색한 장소리스트 개수
+	 * @param $userNo : 유저아이디
+	 * @return int | null 유저가 검색한 장소리스트 개수
 	 */
 	public function getCountOfUserPOIList($userNo) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
@@ -892,7 +892,7 @@ class DB_Functions {
 	
 		// check for successful store
 		if($result) {
-			$stmt = $this->conn->prepare("SELECT * FROM USER_TRACK_TB WHERE WHERE USER_NO = ? AND TRACK_NO = ?");
+			$stmt = $this->conn->prepare("SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 			$stmt->bind_param("ii", $userNo, $trackNo);
 			$stmt->execute();
 			$user_track = $stmt->get_result()->fetch_assoc();
@@ -903,13 +903,15 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Storing new user_bookmark track
-	 * return true,false
-	 */
+
+    /**
+     * Storing new user_bookmark track
+     * @param $userNo : 유저 번호
+     * @param $trackNo : 경로 번호
+     * @return bool
+     */
 	public function deleteUSERBoomarkTrack($userNo, $trackNo) {
-		$stmt = $this->conn->prepare("DELETE USER_BOOKMARK_TRACK_TB WHERE WHERE USER_NO = ? AND TRACK_NO = ?");
+		$stmt = $this->conn->prepare("DELETE FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 		$stmt->bind_param("ii", $userNo, $trackNo);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
@@ -927,8 +929,14 @@ class DB_Functions {
 	 * Deleting new user_track
 	 * return true,false
 	 */
+    /**
+     * 유저 경로 삭제
+     * @param $userNo  : 사용자 번호
+     * @param $trackNo : 경로 번호
+     * @return bool : 경로가 제대로 삭제되었는지 여부.
+     */
 	public function deleteUSERTrack($userNo, $trackNo) {
-		$stmt = $this->conn->prepare("DELETE USER_TRACK_TB WHERE WHERE USER_NO = ? AND TRACK_NO = ?");
+		$stmt = $this->conn->prepare("DELETE FROM USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 		$stmt->bind_param("ii", $userNo, $trackNo);
 		$result = $stmt->execute();
 		error_log(htmlspecialchars($stmt->error), 0);
@@ -941,11 +949,13 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Storing new user_track
-	 * return user_track details
-	 */
+
+    /**
+     * 유저 경로 저장하는 함수
+     * @param $userNo  : 유저번호
+     * @param $trackNo : 경로 번호
+     * @return array|bool : 경로 저장되면 경로 리턴, 아니면 false
+     */
 	public function storeUSERTrack($userNo, $trackNo) {
 		$stmt = $this->conn->prepare("INSERT INTO USER_TRACK_TB(USER_NO, TRACK_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
 		$stmt->bind_param("ii", $userNo, $trackNo);
@@ -955,7 +965,7 @@ class DB_Functions {
 	
 		// check for successful store
 		if($result) {
-			$stmt = $this->conn->prepare("SELECT * FROM USER_TRACK_TB WHERE WHERE USER_NO = ? AND TRACK_NO = ?");
+			$stmt = $this->conn->prepare("SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 			$stmt->bind_param("ii", $userNo, $trackNo);
 			$stmt->execute();
 			$user_track = $stmt->get_result()->fetch_assoc();
@@ -966,11 +976,13 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Storing new user_bookmark_poi
-	 * return user_bookmark_poi details
-	 */
+
+    /**
+     * Storing new user_bookmark_poi
+     * @param $userNo : 유저번호
+     * @param $poiNo  : 장소 번호
+     * @return array|bool : user_bookmark_poi details
+     */
 	public function storeUSERBookMarkPOI($userNo, $poiNo) {
 		$stmt = $this->conn->prepare("INSERT INTO USER_BOOKMARK_POI_TB(USER_NO, POI_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
 		$stmt->bind_param("ii", $userNo, $poiNo);
@@ -980,7 +992,7 @@ class DB_Functions {
 	
 		// check for successful store
 		if($result) {
-			$stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_POI_TB WHERE WHERE USER_NO = ? AND POI_NO = ?");
+			$stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
 			$stmt->bind_param("ii", $userNo, $poiNo);
 			$stmt->execute();
 			$user_poi = $stmt->get_result()->fetch_assoc();
@@ -991,11 +1003,14 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Storing new user_poi
-	 * return user_poi details
-	 */
+
+    /**
+     * Storing new user_poi
+     * return user_poi details
+     * @param $userNo : 유저번호
+     * @param $poiNo : 장소번호
+     * @return array|bool
+     */
 	public function storeUSERPOI($userNo, $poiNo) {
 		$stmt = $this->conn->prepare("INSERT INTO USER_POI_TB(USER_NO, POI_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
 		$stmt->bind_param("ii", $userNo, $poiNo);
@@ -1016,10 +1031,13 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Check user_poi is existed or not
-	 */
+
+    /**
+     * Check user_poi is existed or not
+     * @param $userNo : 유저 번호
+     * @param $trackNo : 경로 번호
+     * @return bool
+     */
 	public function isUSER_TRACKExisted($userNo, $trackNo) {
 		$stmt = $this->conn->prepare("SELECT USER_NO from USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 		$stmt->bind_param("ii", $userNo, $trackNo);
@@ -1035,10 +1053,13 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Check user_poi is existed or not
-	 */
+
+    /**
+     * Check user_poi is existed or not
+     * @param $userNo : 유저번호
+     * @param $poiNo : 장소번호
+     * @return bool
+     */
 	public function updateUSER_POIExisted($userNo, $poiNo) {
 		$stmt = $this->conn->prepare("SELECT USER_NO from USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
 		$stmt->bind_param("ii", $userNo, $poiNo);
@@ -1054,10 +1075,13 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Check user_poi is existed or not
-	 */
+
+    /**
+     * Check user_poi is existed or not
+     * @param $userNo : 유저번호
+     * @param $poiNo : 장소번호
+     * @return bool
+     */
 	public function isUSER_POIExisted($userNo, $poiNo) {
 		$stmt = $this->conn->prepare("SELECT USER_NO from USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
 		$stmt->bind_param("ii", $userNo, $poiNo);
@@ -1101,42 +1125,44 @@ class DB_Functions {
 	 * 
 	 * @param int $userNo 유저번호
 	 * @param int $trackNo 경로번호
-	 * @return usertrack|null 
-	 */
+	 * @return array
+     */
 	public function getUSERTrackByUserNoAndTrackNo($userNo, $trackNo) {
 		$query = "SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?";
 		$stmt = $this->conn->prepare($query);
 		$stmt->bind_param("ii", $userNo, $trackNo);
 		if($stmt->execute()) {
-			$usertrack = $stmt->get_result()->fetch_assoc();
+			$userTrack = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
-			return $usertrack;
+			return $userTrack;
 		} else {
 			return NULL;
 		}
 	}
-	
-	/**
-	 * @param $poiLatLng : 장소
-	 * @return poi 배열
-	 */
+
+    /**
+     * @param $userNo : 유저 번호
+     * @param $poiNo : 장소 번호
+     * @return array
+     */
 	public function getUSERPOIUsingUserNoAndPOINo($userNo, $poiNo) {
 		$query = "SELECT * FROM USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?";
 		$stmt = $this->conn->prepare($query);
 		$stmt->bind_param("ii", $userNo, $poiNo);
 		if($stmt->execute()) {
-			$userpoi = $stmt->get_result()->fetch_assoc();
+			$userPoi = $stmt->get_result()->fetch_assoc();
 			$stmt->close();
-			return $userpoi;
+			return $userPoi;
 		} else {
 			return NULL;
 		}
 	}
-	
-	
-	/**
-	 * Check user is existed or not
-	 */
+
+    /**
+     * Check user is existed or not
+     * @param $EMAIL : 구글이메일
+     * @return bool
+     */
 	public function isUserExistedWithGoogle($EMAIL) {
 		$stmt = $this->conn->prepare("SELECT GOOGLE_EMAIL from USERS WHERE GOOGLE_EMAIL = ?");
 		if ($stmt == FALSE) {
@@ -1146,7 +1172,7 @@ class DB_Functions {
 		$stmt->bind_param("s", $EMAIL);
 		$stmt->execute();
 		$stmt->store_result();
-		if ($stmt->num_rows() > 0) {
+		if ($stmt->num_rows > 0) {
 			// user existed
 			$stmt->close();
 			return true;
@@ -1169,7 +1195,7 @@ class DB_Functions {
 		$stmt->bind_param("s", $ID);
 		$stmt->execute();
 		$stmt->store_result();
-		if ($stmt->num_rows() > 0) {
+		if ($stmt->num_rows > 0) {
 			// user existed
 			$stmt->close();
 			return true;
@@ -1192,7 +1218,7 @@ class DB_Functions {
 		$stmt->bind_param("s", $id);
 		$stmt->execute();
 		$stmt->store_result();
-		if ($stmt->num_rows() > 0) {
+		if ($stmt->num_rows > 0) {
 			// user existed
 			$stmt->close();
 			return true;

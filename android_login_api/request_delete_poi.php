@@ -50,19 +50,21 @@ if(isset($user)) {
 		$poi = false;
 		// check if poi is already existed with the same poiLatLNg
 		if($db->isPOIExisted($poiLatLng)) {
-			$poi = $db->updateLastUsedAtPOI($poiLatLng);
+			$poi = $db->getPOIByPoiLatLng($poiLatLng);
 			$poiNo = $poi["POI_NO"];
 			// track already existed
 			// poiNo userNo를 가진 user_poi table이 있는지 확인
 			if ($db->isUSER_POIExisted($userNo, $poiNo)) {
-				$user_poi = $db->deleteUSERPOIAtUserPOI($userNo, $poiNo);
-				if($user_poi) {
+				$result = $db->deleteUSERPOIAtUserPOI($userNo, $poiNo);
+				if($result) {
 					$response["delete"] = TRUE;
 					$response["delete_msg"] = "유저 - 장소가 삭제되었습니다..";
+                    error_log("유저 - 장소가 삭제되었습니다..");
 					echo json_encode($response);
 				} else {
 					$response["delete"] = FALSE;
 					$response["delete_msg"] = "유저 - 장소가 삭제되지 않았습니다.";
+                    error_log("유저 - 장소가 삭제되지 않았습니다.");
 					echo json_encode($response);
 				}
 			} else {

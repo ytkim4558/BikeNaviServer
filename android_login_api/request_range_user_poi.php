@@ -1,9 +1,11 @@
 <?php
 // 먼저 로그인 정보를 이용하여 유저의 No를 확인한뒤 해당 No에 해당되는 경로 테이블을 가져온다.
 require_once 'include/DB_Functions.php';
+/* Set internal character encoding to UTF-8 */
+mb_internal_encoding("UTF-8");
 $db = new DB_Functions();
 
-error_log("range_poi_list requested!!");
+error_log("range_poi_list 요청됨!!");
 
 // json response array
 $reponse = array("error" => FALSE);

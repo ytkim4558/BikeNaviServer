@@ -69,7 +69,7 @@ if(isset($user)) {
 						if($_POST['delete']) {
 							$db->deleteUSERTrack($userNo, $trackNo);
 						} else {
-							$db->updateLastUsedAtUserPOI($userNo, $poiNo);
+							$db->updateLastUsedAtUserTrack($userNo, $trackNo);
 						}
 					} else if($_POST['bookmark']){
 						$db->deleteUSERBoomarkTrack($userNo, $trackNo);
