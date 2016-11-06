@@ -634,11 +634,11 @@ class DB_Functions {
 	}
 	
 	/**
-	 * @param $usreNo : 유저아이디
+	 * @param $userNo : 유저아이디
 	 * @param $start : 시작번호
 	 * @param $limit : 가져올 아이템 개수
-	 * @return bookmarkTrack 리스트 : 북마크 경로 리스트
-	 */
+	 * @return array : 북마크 경로 리스트
+     */
 	public function getRangeUserBookMarkOfTrackUsingUserNo($userNo, $start, $limit) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
 		$query = "SELECT * FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ? LIMIT ?, ?";
@@ -675,11 +675,11 @@ class DB_Functions {
 			return NULL;
 		}
 	}
-	
-	/**
-	 * @param $usreNo : 유저아이디
-	 * @return bookmarkTrack 리스트 : 북마크 경로 리스트
-	 */
+
+    /**
+     * @param $userNo : 유저아이디
+     * @return string : 북마크 경로 리스트
+     */
 	public function getAllUserBookMarkOfTrackUsingUserNo($userNo) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블 
 		$query = "SELECT * FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ?";
@@ -742,13 +742,13 @@ class DB_Functions {
 			return NULL;
 		}
 	}
-	
-	/**
-	 * @param $usreNo : 유저아이디
-	 * @param $start : 시작번호
-	 * @param $limit : 가져올 아이템 개수
-	 * @return 유저별 장소리스트에서 범위별
-	 */
+
+    /**
+     * @param $userNo : 유저번호
+     * @param $start : 시작번호
+     * @param $limit : 가져올 아이템 개수
+     * @return array|null : 유저별 장소리스트에서 범위별
+     */
 	public function getRangeUserRecentPOIListUsingUserNo($userNo, $start, $limit) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
 		$query = "SELECT * FROM USER_POI_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT ?, ?";
@@ -797,8 +797,8 @@ class DB_Functions {
 	 * @param $usreNo : 유저아이디
 	 * @param $start : 시작번호
 	 * @param $limit : 끝번호
-	 * @return recentSearchmarkTrack 리스트 : 최근 경로 리스트
-	 */
+	 * @return string : 리스트 : 최근 경로 리스트
+     */
 	public function getRangeUserRecentTrackOfTrackUsingUserNo($userNo, $start, $limit) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
 		$query = "SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT ?, ?";
@@ -840,8 +840,8 @@ class DB_Functions {
 	
 	/**
 	 * @param $usreNo : 유저아이디
-	 * @return recentSearchmarkTrack 리스트 : 최근 경로 리스트
-	 */
+	 * @return string : 최근 경로 리스트
+     */
 	public function getAllUserRecentTrackOfTrackUsingUserNo($userNo) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
 		$query = "SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC";
@@ -883,7 +883,7 @@ class DB_Functions {
 	 * Storing new user_bookmark_track
 	 * return user_bookmark_track details
 	 */
-	public function storeBoomarkUSERTrack($userNo, $trackNo) {
+	public function storeBookmarkUSERTrack($userNo, $trackNo) {
 		$stmt = $this->conn->prepare("INSERT INTO USER_BOOKMARK_TRACK_TB(USER_NO, TRACK_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
 		$stmt->bind_param("ii", $userNo, $trackNo);
 		$result = $stmt->execute();
@@ -910,7 +910,7 @@ class DB_Functions {
      * @param $trackNo : 경로 번호
      * @return bool
      */
-	public function deleteUSERBoomarkTrack($userNo, $trackNo) {
+	public function deleteUSERBookmarkTrack($userNo, $trackNo) {
 		$stmt = $this->conn->prepare("DELETE FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 		$stmt->bind_param("ii", $userNo, $trackNo);
 		$result = $stmt->execute();
@@ -1043,7 +1043,7 @@ class DB_Functions {
 		$stmt->bind_param("ii", $userNo, $trackNo);
 		$stmt->execute();
 		$stmt->store_result();
-		if ($stmt->num_rows() > 0) {
+		if ($stmt->num_rows > 0) {
 			// user existed
 			$stmt->close();
 			return true;
@@ -1065,7 +1065,7 @@ class DB_Functions {
 		$stmt->bind_param("ii", $userNo, $poiNo);
 		$stmt->execute();
 		$stmt->store_result();
-		if ($stmt->num_rows() > 0) {
+		if ($stmt->num_rows > 0) {
 			// user existed
 			$stmt->close();
 			return true;
@@ -1087,7 +1087,7 @@ class DB_Functions {
 		$stmt->bind_param("ii", $userNo, $poiNo);
 		$stmt->execute();
 		$stmt->store_result();
-		if ($stmt->num_rows() > 0) {
+		if ($stmt->num_rows > 0) {
 			// user existed
 			$stmt->close();
 			return true;
@@ -1111,10 +1111,10 @@ class DB_Functions {
 			$stmt = $this->conn->prepare("SELECT LAST_USED_AT FROM USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
 			$stmt->bind_param("ii", $userNo, $poiNo);
 			if($stmt->execute()) {
-				$userpoi = $stmt->get_result()->fetch_assoc();
+				$userPoi = $stmt->get_result()->fetch_assoc();
 				$stmt->close();
 	
-				return $userpoi;
+				return $userPoi;
 			}
 		} else {
 			return false;
@@ -1182,10 +1182,12 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Check user is existed or not
-	 */
+
+    /**
+     * Check user is existed or not
+     * @param $ID : 페북아이디(숫자)
+     * @return bool
+     */
 	public function isUserExistedWithFacebookID($ID) {
 		$stmt = $this->conn->prepare("SELECT FACEBOOK_ID_NUM from USERS WHERE FACEBOOK_ID_NUM = ?");
 		if ($stmt == FALSE) {
@@ -1228,12 +1230,12 @@ class DB_Functions {
 			return false;
 		}
 	}
-	
-	/**
-	 * Encrypting password
-	 * @param password
-	 * return salt and encrypted passwrd
-	 */
+
+    /**
+     * Encrypting password
+     * @param password
+     * @return array salt and encrypted passwrd
+     */
 	public function hashSSHA($password) {
 		$salt = sha1(rand());
 		$salt = substr($salt, 0, 10);
@@ -1241,12 +1243,13 @@ class DB_Functions {
 		$hash = array("salt" => $salt, "encrypted" => $encrypted);
 		return $hash;
 	}
-	
-	/**
-	 * Decrypting password
-	 * @param salt, password
-	 * return hash string
-	 */
+
+    /**
+     * Decrypting password
+     * @param $salt
+     * @param $password
+     * @return string : hash
+     */
 	public function checkhashSSHA($salt, $password) {
 		$hash = base64_encode(sha1($password . $salt, true) . $salt);
 		return $hash;

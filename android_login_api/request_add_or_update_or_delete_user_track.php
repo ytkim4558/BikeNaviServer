@@ -72,7 +72,7 @@ if(isset($user)) {
 							$db->updateLastUsedAtUserTrack($userNo, $trackNo);
 						}
 					} else if($_POST['bookmark']){
-						$db->deleteUSERBoomarkTrack($userNo, $trackNo);
+						$db->deleteUSERBookmarkTrack($userNo, $trackNo);
 					} else {
 						$response["error"] = TRUE;
 						$response["error_msg"] = "recent, bookmark 누락.!";
@@ -83,7 +83,7 @@ if(isset($user)) {
 					if($_POST['recent']) {
 						$db->storeUSERTrack($userNo, $trackNo);
 					} else if($_POST['bookmark']){
-						$db->deleteUSERBoomarkTrack($userNo, $trackNo);
+						$db->deleteUSERBookmarkTrack($userNo, $trackNo);
 					} else {
 						$response["error"] = TRUE;
 						$response["error_msg"] = "recent, bookmark 누락.!";
