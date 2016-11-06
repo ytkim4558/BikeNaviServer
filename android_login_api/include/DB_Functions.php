@@ -328,10 +328,10 @@ class DB_Functions {
 		// check for successful store
 		if($result) {
 			if(isset($STOP_POI_NO_ARRAY)) {
-				$stmt = $this->conn->prepare("SELECT TRACK_NO FROM TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ? AND STOP_POI_NO_ARRAY = ?");
+				$stmt = $this->conn->prepare("SELECT * FROM TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ? AND STOP_POI_NO_ARRAY = ?");
 				$stmt->bind_param("iis", $START_POI_NO, $DEST_POI_NO, $STOP_POI_NO_ARRAY);
 			} else {
-				$stmt = $this->conn->prepare("SELECT TRACK_NO FROM TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ?");
+				$stmt = $this->conn->prepare("SELECT * FROM TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ?");
 				$stmt->bind_param("ii", $START_POI_NO, $DEST_POI_NO);
 			}
 			$stmt->execute();
@@ -379,10 +379,10 @@ class DB_Functions {
 	public function getTrack($start_poi_no, $dest_poi_no, $stop_poi_no_array) {
 		$stmt = NULL;
 		if (isset($stop_poi_no_array)) {
-			$stmt = $this->conn->prepare("SELECT TRACK_NO from TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ? AND STOP_POI_NO_ARRAY = ?");
+			$stmt = $this->conn->prepare("SELECT * from TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ? AND STOP_POI_NO_ARRAY = ?");
 			$stmt->bind_param("iis", $start_poi_no, $dest_poi_no, $stop_poi_no_array);
 		} else {
-			$stmt = $this->conn->prepare("SELECT TRACK_NO from TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ?");
+			$stmt = $this->conn->prepare("SELECT * from TRACK_TB WHERE START_POI_NO = ? AND DEST_POI_NO = ?");
 			$stmt->bind_param("ii", $start_poi_no, $dest_poi_no);
 		}
 		$result = $stmt->execute();
@@ -435,6 +435,59 @@ class DB_Functions {
 		} else {
 			// user not existed
 			$stmt->close();
+			return false;
+		}
+	}
+	
+	// USER_POI 정보 삭제하는 함수
+	/**
+	 *
+	 * @param int $userNo	: 유저 번호
+	 * @param int $poiNo	: 장소 번호
+	 * @return array|boolean
+	 */
+	public function deleteUSERPOIAtUserPOI($userNo, $poiNo) {
+		$stmt = $this->conn->prepare("DELETE USER_POI_TB WHERE POI_NO = ? AND USER_NO = ?");
+		$stmt->bind_param("ii", $poiNo, $userNo);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful delete
+		if($result) {
+			true;
+		} else {
+			return false;
+		}
+	}
+	
+	// USER_TRACK 정보 업데이트
+	/**
+	 *
+	 * @param int $userNo	: 유저 번호
+	 * @param int $poiNo	: 장소 번호
+	 * @return array|boolean
+	 */
+	public function updateLastUsedAtUserTrack($userNo, $trackNo) {
+		$stmt = $this->conn->prepare("UPDATE USER_TRACK_TB SET LAST_USED_AT = NOW() WHERE TRACK_NO = ? AND USER_NO = ?");
+		$stmt->bind_param("ii", $trackNo, $userNo);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful store
+		if($result) {
+			$stmt = $this->conn->prepare("SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
+			$stmt->bind_param("ii", $userNo, $trackNo);
+			if($stmt->execute()) {
+				$poi = $stmt->get_result()->fetch_assoc();
+				$stmt->close();
+	
+				return $poi;
+			} else {
+				return false;
+			}
+		} else {
 			return false;
 		}
 	}
@@ -846,6 +899,44 @@ class DB_Functions {
 			$stmt->close();
 	
 			return $user_track;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Storing new user_bookmark track
+	 * return true,false
+	 */
+	public function deleteUSERBoomarkTrack($userNo, $trackNo) {
+		$stmt = $this->conn->prepare("DELETE USER_BOOKMARK_TRACK_TB WHERE WHERE USER_NO = ? AND TRACK_NO = ?");
+		$stmt->bind_param("ii", $userNo, $trackNo);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful delete
+		if($result) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Deleting new user_track
+	 * return true,false
+	 */
+	public function deleteUSERTrack($userNo, $trackNo) {
+		$stmt = $this->conn->prepare("DELETE USER_TRACK_TB WHERE WHERE USER_NO = ? AND TRACK_NO = ?");
+		$stmt->bind_param("ii", $userNo, $trackNo);
+		$result = $stmt->execute();
+		error_log(htmlspecialchars($stmt->error), 0);
+		$stmt->close();
+	
+		// check for successful delete
+		if($result) {
+			return true;
 		} else {
 			return false;
 		}
