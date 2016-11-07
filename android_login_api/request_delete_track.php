@@ -40,51 +40,105 @@ if (isset($_POST['email'])) {
 }
 
 if(isset($user)) {
-	$userNo = $user['USER_NO'];
-	if (isset($_POST['POI_NAME'])  && isset($_POST['POI_ADDRESS']) && isset($_POST['POI_LAT_LNG'])) {
-		// receiving the post params
-		// int로 변환 http://stackoverflow.com/questions/5052932/how-to-get-int-instead-string-from-form
-		$poiName = $_POST['POI_NAME'];
-		$poiAddress = $_POST['POI_ADDRESS'];
-		$poiLatLng = $_POST['POI_LAT_LNG'];
-		$poi = false;
-		// check if poi is already existed with the same poiLatLNg
-		if($db->isPOIExisted($poiLatLng)) {
-			$poi = $db->getPOIByPoiLatLng($poiLatLng);
-			$poiNo = $poi["POI_NO"];
-			// track already existed
-			// poiNo userNo를 가진 user_poi table이 있는지 확인
-			if ($db->isUSER_POIExisted($userNo, $poiNo)) {
-				$result = $db->deleteUSERPOIAtUserPOI($userNo, $poiNo);
-				if($result) {
-					$response["delete"] = TRUE;
-					$response["delete_msg"] = "유저 - 장소가 삭제되었습니다..";
-                    error_log("유저 - 장소가 삭제되었습니다..");
-					echo json_encode($response);
-				} else {
-					$response["delete"] = FALSE;
-					$response["delete_msg"] = "유저 - 장소가 삭제되지 않았습니다.";
-                    error_log("유저 - 장소가 삭제되지 않았습니다.");
-					echo json_encode($response);
-				}
-			} else {
-				$response["delete"] = FALSE;
-				$response["delete_msg"] = "유저 - 장소가  존재하지 않았습니다.";
-				echo json_encode($response);
-			}
-		} else {
-			$response["delete"] = FALSE;
-			$response["delete_msg"] = "장소가 존재하지 않습니다.";
-			echo json_encode($response);
-		}
-	} else {
-		$response["delete"] = FALSE;
-		$response["delete_msg"] = "필수정보인 장소 인수가 올바른지 확인해보세요!";
-		echo json_encode($response);
-	}
-} else {
-	$response["delete"] = FALSE;
-	$response["delete_msg"] = "경로를 등록하거나 갱신하는데 필수정보가 없습니다.";
-	echo json_encode($response);
+    $userNo = $user['USER_NO'];
+    if (isset($_POST['START_POI_LAT_LNG']) && isset($_POST['DEST_POI_LAT_LNG'])) {
+        // START_POI 정보를 가져옴
+        $startPOILatLng = $_POST['START_POI_LAT_LNG'];
+        $startPOI = $db->getPOIByPoiLatLng($startPOILatLng);
+        $startPOINo = $startPOI['POI_NO'];
+
+        // DEST_POI 정보를 가져옴
+        $destPOILatLng = $_POST['DEST_POI_LAT_LNG'];
+        $destPOI = $db->getPOIByPoiLatLng($destPOILatLng);
+        $destPOINo = $destPOI['POI_NO'];
+
+        if (isset($startPOINo) && isset($destPOINo)) {
+            // receiving the post params
+            // int로 변환 http://stackoverflow.com/questions/5052932/how-to-get-int-instead-string-from-form
+            $stopPOIArray = null;
+            if (isset($_POST['STOP_POI_ARRAY'])) {
+                $stopPOIArray = $_POST['STOP_POI_ARRAY'];
+            }
+
+            // check if track is already existed with the same start_poi_no, dest_poi_no, stop_poi_no(optional)
+            if ($db->isTrackExisted($startPOINo, $destPOINo, $stopPOIArray)) {
+                $track = $db->getTrack($startPOINo, $destPOINo, $stopPOIArray);
+                if ($track) {
+                    $trackNo = $track['TRACK_NO'];
+                    // track already existed
+                    // start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_track table이 있는지 확인
+                    if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
+                        // 기존에 userTrack 정보가 있다면 삭제할것
+                        if (isset($_POST['recent'])) {
+                            $db->deleteUSERTrack($userNo, $trackNo);
+                        } else if ($_POST['bookmark']) {
+                            $db->deleteUSERBookmarkTrack($userNo, $trackNo);
+                        } else {
+                            $response["error"] = TRUE;
+                            $response["error_msg"] = "recent, bookmark 누락.!";
+                            echo json_encode($response);
+                        }
+                    } else {
+                        // 기존에 userTrack 정보가 없다면 추가할 것
+                        if ($_POST['recent']) {
+                            error_log("store 시도");
+                            $db->storeUSERTrack($userNo, $trackNo);
+                            error_log("store 되야됨");
+                            // track stored successfully
+                            $response["error"] = FALSE;
+                            $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
+                            $response["track"]["start_poi"] = save_poi($response, $start_poi);
+                            $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
+                            $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
+                            $response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
+                            $response["track"]["created_at"] = $track["CREATED_AT"];
+                            $response["track"]["updated_at"] = $track["UPDATED_AT"];
+                            $response["track"]["last_used_at"] = $track["LAST_USED_AT"];
+                            echo json_encode($response);
+                        } else if ($_POST['bookmark']) {
+                            $db->deleteUSERBookmarkTrack($userNo, $trackNo);
+                        } else {
+                            $response["error"] = TRUE;
+                            $response["error_msg"] = "recent, bookmark 누락.!";
+                            echo json_encode($response);
+                        }
+                    }
+                } else {
+                    $response["error"] = TRUE;
+                    $response["error_msg"] = "경로를 가져오는 동안 오류가 생겼습니다.!";
+                    echo json_encode($response);
+                }
+            } else {
+                // create a new Track
+                $track = $db->storeTrack($startPOINo, $destPOINo, $stopPOIArray);
+                if ($track) {
+                    // track stored successfully
+                    $response["error"] = FALSE;
+                    $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
+                    $response["track"]["start_poi"] = save_poi($response, $start_poi);
+                    $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
+                    $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
+                    $response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
+                    $response["track"]["created_at"] = $track["CREATED_AT"];
+                    $response["track"]["updated_at"] = $track["UPDATED_AT"];
+                    $response["track"]["last_used_at"] = $track["LAST_USED_AT"];
+                    echo json_encode($response);
+                } else {
+                    // user failed to store
+                    $response["error"] = TRUE;
+                    $response["error_msg"] = "경로를 등록하는 동안 알 수 없는 오류가 발생했습니다!";
+                    echo json_encode($response);
+                }
+            }
+
+        } else {
+            $response["error"] = TRUE;
+            $response["error_msg"] = "경로 정보가 없습니다!";
+            echo json_encode($response);
+        }
+    } else {
+        $response["error"] = TRUE;
+        $response["error_msg"] = "유저 정보가 없습니다!";
+        echo json_encode($response);
+    }
 }
-?>

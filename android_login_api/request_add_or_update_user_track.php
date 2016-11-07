@@ -67,13 +67,9 @@ if(isset($user)) {
 				// track already existed
 				// start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_track table이 있는지 확인
 				if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
-					// 기존에 userTrack 정보가 있다면 삭제할것
+					// 기존에 userTrack 정보가 있다면 업데이트할것
 					if(isset($_POST['recent'])) {
-						if(isset($_POST['delete'])) {
-							$db->deleteUSERTrack($userNo, $trackNo);
-						} else {
-							$db->updateLastUsedAtUserTrack($userNo, $trackNo);
-						}
+						$db->updateLastUsedAtUserTrack($userNo, $trackNo);
 					} else if($_POST['bookmark']){
 						$db->deleteUSERBookmarkTrack($userNo, $trackNo);
 					} else {
@@ -163,4 +159,3 @@ function save_poi($response, $poi) {
         return false;
     }
 }
-?>
