@@ -368,6 +368,24 @@ class DB_Functions {
 			return false;
 		}
 	}
+
+    /**
+     * @param $poiID : poi 숫자번호
+     * @return array|bool : poi
+     */
+    public function getPOIUsingPOIID($poiID) {
+        $stmt = NULL;
+        $stmt = $this->conn->prepare("SELECT * from POI_TB WHERE POI_NO = ?");
+        $stmt->bind_param("i", $poiID);
+        $result = $stmt->execute();
+        if($result) {
+            $poi = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+            return $poi;
+        } else {
+            return false;
+        }
+    }
 	
 	/**
 	 * 경로 가져오기
@@ -651,14 +669,16 @@ class DB_Functions {
 		if($stmt->execute()) {
 			while($track = $stmt->get_result()->fetch_assoc()) {
 				// TRACK_TB : 경로 테이블
-				$query = "SELECT * FROM TRACK_TB WHERE NO = ?";
+				$query = "SELECT * FROM TRACK_TB WHERE TRACK_NO = ?";
 				$stmt2 = $this->conn->prepare($query);
 				$stmt2->bind_param("i", $track['TRACK_NO']);
 				if($stmt2->execute()) {
 					while($track_row = $stmt2->get_result()->fetch_assoc()) {
+                        $start_poi = $this->getPOIUsingPOIID($track_row["START_POI_NO"]);
+                        $dest_poi = $this->getPOIUsingPOIID($track_row["DEST_POI_NO"]);
 						array_push($res, array(
-								"bookmark_start_poi_no"=>$track_row["START_POI_NO"],
-								"bookmark_dest_poi_no"=>$track_row["DEST_POI_NO"],
+								"bookmark_start_poi"=>$this->save_poi($start_poi),
+								"bookmark_dest_poi"=>$this->save_poi($dest_poi),
 								"bookmark_stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
 								"bookmark_created_at"=>$track_row["CREATED_AT"],
 								"bookmark_updated_at"=>$track_row["UPDATED_AT"],
@@ -675,6 +695,25 @@ class DB_Functions {
 			return NULL;
 		}
 	}
+
+    /**
+     * @param $poi : poi 정보
+     * @return array
+     */
+    private function save_poi($poi) {
+        $response = array();
+        if($poi) {
+            $response["poiName"] = $poi["POI_NAME"];
+            $response["poiAddress"] = $poi["POI_ADDRESS"];
+            $response["poiLatLng"] = $poi["POI_LAT_LNG"];
+            $response["created_at"] = $poi["CREATED_AT"];
+            $response["updated_at"] = $poi["UPDATED_AT"];
+            $response["last_used_at"] = $poi["LAST_USED_AT"];
+            return $response;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @param $userNo : 유저아이디
@@ -697,9 +736,11 @@ class DB_Functions {
 				$stmt2->bind_param("i", $track['TRACK_NO']);
 				if($stmt2->execute()) {
 					while($track_row = $stmt2->get_result()->fetch_assoc()) {
+                        $start_poi = $this->getPOIUsingPOIID($track_row["START_POI_NO"]);
+                        $dest_poi = $this->getPOIUsingPOIID($track_row["DEST_POI_NO"]);
 						array_push($res, array(
-								"bookmark_start_poi_no"=>$track_row["START_POI_NO"],
-								"bookmark_dest_poi_no"=>$track_row["DEST_POI_NO"],
+								"bookmark_start_poi"=>$start_poi,
+								"bookmark_dest_poi"=>$dest_poi,
 								"bookmark_stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
 								"bookmark_created_at"=>$track_row["CREATED_AT"],
 								"bookmark_updated_at"=>$track_row["UPDATED_AT"],
@@ -716,6 +757,32 @@ class DB_Functions {
 			return NULL;
 		}
 	}
+
+    /**
+     * @param $userNo : 유저아이디
+     * @return int | null 유저가 검색한 장소리스트 개수
+     */
+    public function getCountOfUserTrackList($userNo) {
+        // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
+        $query = "SELECT * FROM USER_TRACK_TB WHERE USER_NO = ?";
+        $stmt = $this->conn->prepare($query);
+
+        // 유저번호
+        $stmt->bind_param("i", $userNo);
+
+        /* 쿼리 실행 */
+        if($stmt->execute()) {
+            /* 결과 저장*/
+            $stmt->store_result();
+
+            $res = $stmt->num_rows;
+
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
 	
 	/**
 	 * @param $userNo : 유저아이디
@@ -749,10 +816,59 @@ class DB_Functions {
      * @param $limit : 가져올 아이템 개수
      * @return array|null : 유저별 장소리스트에서 범위별
      */
+    public function getRangeUserBookMarkPOIListUsingUserNo($userNo, $start, $limit) {
+        // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
+        $query = "SELECT * FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT ?, ?";
+        error_log($query);
+        error_log("query : ".$query);
+        $stmt = $this->conn->prepare($query);
+
+        // 유저번호, 리스트 보이는 부분 시작 위치, 리스트 보이는부분 끝 위치
+        $stmt->bind_param("iii", $userNo, $start, $limit);
+
+        // arraydp 결과 삽입 (참고 : https://www.simplifiedcoding.net/android-feed-example-using-php-mysql-volley/)
+        $res = array();
+
+        if($stmt->execute()) {
+            if($result = $stmt->get_result()) {
+                while($user_poi_row = $result->fetch_assoc()) {
+                    // POI_TB : 경로 테이블
+                    $query = "SELECT * FROM POI_TB WHERE POI_NO = ?";
+                    $stmt2 = $this->conn->prepare($query);
+                    $stmt2->bind_param("i", $user_poi_row['POI_NO']);
+                    if($stmt2->execute()) {
+                        $poi = $stmt2->get_result()->fetch_assoc();
+                        error_log(json_encode($poi));
+                        array_push($res, array(
+                                "poiName"=>$poi["POI_NAME"],
+                                "poiAddress"=>$poi["POI_ADDRESS"],
+                                "poiLatLng"=>$poi["POI_LAT_LNG"],
+                                "created_at"=>$user_poi_row["CREATED_AT"],
+                                "updated_at"=>$user_poi_row["UPDATED_AT"],
+                                "last_used_at"=>$user_poi_row["LAST_USED_AT"])
+                        );
+                        $stmt2->close();
+                    }
+                }
+            } else {
+                error_log("get_result is nothing?");
+            }
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
+
+    /**
+     * @param $userNo : 유저번호
+     * @param $start : 시작번호
+     * @param $limit : 가져올 아이템 개수
+     * @return array|null : 유저별 장소리스트에서 범위별
+     */
 	public function getRangeUserRecentPOIListUsingUserNo($userNo, $start, $limit) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
 		$query = "SELECT * FROM USER_POI_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT ?, ?";
-		error_log($query);
 		error_log("query : ".$query);
 		$stmt = $this->conn->prepare($query);
 	
@@ -771,7 +887,7 @@ class DB_Functions {
 					$stmt2->bind_param("i", $user_poi_row['POI_NO']);
 					if($stmt2->execute()) {
 						$poi = $stmt2->get_result()->fetch_assoc();
-						error_log(json_encode($poi));
+//						error_log(json_encode($poi));
 						array_push($res, array(
 								"poiName"=>$poi["POI_NAME"],
 								"poiAddress"=>$poi["POI_ADDRESS"],
@@ -794,44 +910,56 @@ class DB_Functions {
 	}
 	
 	/**
-	 * @param $usreNo : 유저아이디
+	 * @param $userNo : 유저아이디
 	 * @param $start : 시작번호
 	 * @param $limit : 끝번호
 	 * @return string : 리스트 : 최근 경로 리스트
      */
 	public function getRangeUserRecentTrackOfTrackUsingUserNo($userNo, $start, $limit) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
+        error_log("start :".$start.", limit : ".$limit);
 		$query = "SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT ?, ?";
+        error_log("query : ".$query);
 		$stmt = $this->conn->prepare($query);
 
 		// 유저번호, 리스트 보이는 부분 시작 위치, 리스트 보이는부분 끝 위치
 		$stmt->bind_param("iii", $userNo, $start, $limit);
 	
-		// arraydp 결과 삽입 (참고 : https://www.simplifiedcoding.net/android-feed-example-using-php-mysql-volley/)
+		// array 결과 삽입 (참고 : https://www.simplifiedcoding.net/android-feed-example-using-php-mysql-volley/)
 		$res = array();
 	
 		if($stmt->execute()) {
-			while($track = $stmt->get_result()->fetch_assoc()) {
-				// TRACK_TB : 경로 테이블
-				$query = "SELECT * FROM TRACK_TB WHERE NO = ?";
-				$stmt2 = $this->conn->prepare($query);
-				$stmt2->bind_param("i", $track['TRACK_NO']);
-				if($stmt2->execute()) {
-					while($track_row = $stmt2->get_result()->fetch_assoc()) {
-						array_push($res, array(
-								"recent_start_poi_no"=>$track_row["START_POI_NO"],
-								"recent_dest_poi_no"=>$track_row["DEST_POI_NO"],
-								"recent_stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
-								"recent_created_at"=>$track_row["CREATED_AT"],
-								"recent_updated_at"=>$track_row["UPDATED_AT"],
-								"recent_last_used_at"=>$track_row["LAST_USED_AT"])
-								);
-					}
-					$stmt2->close();
-				}
-	
-			}
+            if($result = $stmt->get_result()) {
+                while ($user_track = $result->fetch_assoc()) {
+                    // TRACK_TB : 경로 테이블
+                    $query = "SELECT * FROM TRACK_TB WHERE TRACK_NO = ?";
+                    $stmt2 = $this->conn->prepare($query);
+                    $stmt2->bind_param("i", $user_track['TRACK_NO']);
+                    error_log($user_track['TRACK_NO']);
+                    if ($stmt2->execute()) {
+                        $result2 = $stmt2->get_result();
+                        if($result2) {
+                            while ($track_row = $result2->fetch_assoc()) {
+                                array_push($res, array(
+                                        "start_poi" => $this->save_poi($this->getPOIUsingPOIID($track_row["START_POI_NO"])),
+                                        "dest_poi" => $this->save_poi($this->getPOIUsingPOIID($track_row["DEST_POI_NO"])),
+                                        "stop_list" => $track_row["STOP_POI_NO_ARRAY"],
+                                        "created_at" => $track_row["CREATED_AT"],
+                                        "updated_at" => $track_row["UPDATED_AT"],
+                                        "last_used_at" => $track_row["LAST_USED_AT"])
+                                );
+                                error_log(json_encode($track_row));
+                            }
+                        }
+                        $stmt2->close();
+                    }
+                }
+            } else {
+                error_log("get_result is nothing?");
+                return NULL;
+            }
 			$stmt->close();
+            error_log(json_encode($res));
 			return json_encode($res);
 		} else {
 			return NULL;
@@ -839,7 +967,7 @@ class DB_Functions {
 	}
 	
 	/**
-	 * @param $usreNo : 유저아이디
+	 * @param $userNo : 유저아이디
 	 * @return string : 최근 경로 리스트
      */
 	public function getAllUserRecentTrackOfTrackUsingUserNo($userNo) {
@@ -860,12 +988,12 @@ class DB_Functions {
 				if($stmt2->execute()) {
 					while($track_row = $stmt2->get_result()->fetch_assoc()) {
 						array_push($res, array(
-								"recent_start_poi_no"=>$track_row["START_POI_NO"],
-								"recent_dest_poi_no"=>$track_row["DEST_POI_NO"],
-								"recent_stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
-								"recent_created_at"=>$track_row["CREATED_AT"],
-								"recent_updated_at"=>$track_row["UPDATED_AT"],
-								"recent_last_used_at"=>$track_row["LAST_USED_AT"])
+                                "start_poi"=>$this->save_poi($this->getPOIUsingPOIID($track_row["START_POI_NO"])),
+                                "dest_poi"=>$this->save_poi($this->getPOIUsingPOIID($track_row["DEST_POI_NO"])),
+								"stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
+								"created_at"=>$track_row["CREATED_AT"],
+								"updated_at"=>$track_row["UPDATED_AT"],
+								"last_used_at"=>$track_row["LAST_USED_AT"])
 								);
 					}
 					$stmt2->close();

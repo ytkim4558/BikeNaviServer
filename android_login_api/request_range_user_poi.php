@@ -2,7 +2,7 @@
 // 먼저 로그인 정보를 이용하여 유저의 No를 확인한뒤 해당 No에 해당되는 경로 테이블을 가져온다.
 require_once 'include/DB_Functions.php';
 /* Set internal character encoding to UTF-8 */
-mb_internal_encoding("UTF-8");
+//mb_internal_encoding("UTF-8");
 $db = new DB_Functions();
 
 error_log("range_poi_list 요청됨!!");
@@ -75,7 +75,7 @@ if(isset($user)) {
 			if(isset($_POST['bookmark'])) {
 				// 페이징에 맞춘 즐겨찾기 경로를 가져오기 (유저번호, 시작 아이템번호, 아이템 개수)
 				$response["error"] = FALSE;
-				$response['bookmark'] = $db->getRangeUserBookMarkOfTrackUsingUserNo($userNo, $start, $limit);
+				$response['bookmark'] = $db->getRangeUserBookMarkPOIListUsingUserNo($userNo, $start, $limit);
 				echo json_encode($response);
 			} else if(isset($_POST['recent'])) {
 				// 최근 경로 리스트 요청할 때
@@ -87,6 +87,7 @@ if(isset($user)) {
 		} else {
 			$response["error"] = TRUE;
 			$response["error_msg"] = "개수가 초과되었습니다!";
+            error_log("개수가 초과되었어");
 		}
 	}
 } else {

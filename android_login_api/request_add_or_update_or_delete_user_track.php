@@ -2,7 +2,7 @@
 
 require_once 'include/DB_Functions.php';
 $db = new DB_Functions();
-error_log("reguest_add_or_delete_user_track_page 입니다~");
+error_log("reguest_add_or_update_or_delete_user_track_page 입니다~");
 
 // json response array
 $response = array("error" => FALSE);
@@ -52,9 +52,12 @@ if(isset($user)) {
 	$destPOINo = $destPOI['POI_NO'];
 	
 	if (isset($startPOINo)  && isset($destPOINo)) {
-		// receiving the post params
-		// int로 변환 http://stackoverflow.com/questions/5052932/how-to-get-int-instead-string-from-form
-		$stopPOIArray = $_POST['STOP_POI_ARRAY'];
+        // receiving the post params
+        // int로 변환 http://stackoverflow.com/questions/5052932/how-to-get-int-instead-string-from-form
+        $stopPOIArray = null;
+        if (isset($_POST['STOP_POI_ARRAY'])) {
+		    $stopPOIArray = $_POST['STOP_POI_ARRAY'];
+        }
 		
 		// check if track is already existed with the same start_poi_no, dest_poi_no, stop_poi_no(optional)
 		if ($db->isTrackExisted($startPOINo, $destPOINo, $stopPOIArray)) {
@@ -65,8 +68,8 @@ if(isset($user)) {
 				// start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_track table이 있는지 확인
 				if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
 					// 기존에 userTrack 정보가 있다면 삭제할것
-					if($_POST['recent']) {
-						if($_POST['delete']) {
+					if(isset($_POST['recent'])) {
+						if(isset($_POST['delete'])) {
 							$db->deleteUSERTrack($userNo, $trackNo);
 						} else {
 							$db->updateLastUsedAtUserTrack($userNo, $trackNo);
@@ -81,7 +84,20 @@ if(isset($user)) {
 				} else {
 					// 기존에 userTrack 정보가 없다면 추가할 것
 					if($_POST['recent']) {
+                        error_log("store 시도");
 						$db->storeUSERTrack($userNo, $trackNo);
+                        error_log("store 되야됨");
+                        // track stored successfully
+                        $response["error"] = FALSE;
+                        $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
+                        $response["track"]["start_poi"] = save_poi($response, $start_poi);
+                        $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
+                        $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
+                        $response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
+                        $response["track"]["created_at"] = $track["CREATED_AT"];
+                        $response["track"]["updated_at"] = $track["UPDATED_AT"];
+                        $response["track"]["last_used_at"] = $track["LAST_USED_AT"];
+                        echo json_encode($response);
 					} else if($_POST['bookmark']){
 						$db->deleteUSERBookmarkTrack($userNo, $trackNo);
 					} else {
@@ -99,10 +115,12 @@ if(isset($user)) {
 			// create a new Track
 			$track = $db->storeTrack($startPOINo, $destPOINo, $stopPOIArray);
 			if ($track) {
-				// poi stored successfully
+				// track stored successfully
 				$response["error"] = FALSE;
-				$response["track"]["start_poi_no"] = $track["START_POI_NO"];
-				$response["track"]["dest_poi_no"] = $track["DEST_POI_NO"];
+                $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
+                $response["track"]["start_poi"] = save_poi($response, $start_poi);
+                $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
+                $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
 				$response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
 				$response["track"]["created_at"] = $track["CREATED_AT"];
 				$response["track"]["updated_at"] = $track["UPDATED_AT"];
@@ -125,5 +143,24 @@ if(isset($user)) {
 	$response["error"] = TRUE;
 	$response["error_msg"] = "유저 정보가 없습니다!";
 	echo json_encode($response);
+}
+
+/**
+ * @param $response : 저장할 배열
+ * @param $poi : poi 정보
+ * @return bool
+ */
+function save_poi($response, $poi) {
+    if($poi) {
+        $response["poiName"] = $poi["POI_NAME"];
+        $response["poiAddress"] = $poi["POI_ADDRESS"];
+        $response["poiLatLng"] = $poi["POI_LAT_LNG"];
+        $response["created_at"] = $poi["CREATED_AT"];
+        $response["updated_at"] = $poi["UPDATED_AT"];
+        $response["last_used_at"] = $poi["LAST_USED_AT"];
+        return $response;
+    } else {
+        return false;
+    }
 }
 ?>
