@@ -74,9 +74,41 @@ if(isset($_POST['recent']) or isset($_POST['bookmark'])) {
                     // track already existed
                     // start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_bookmark_track table이 있는지 확인
                     $user_bookmark = null;
-                    If (isset($_POST['bookmark'])) {
+
+                    // start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_track table이 있는지 확인
+                    if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
+                        // 기존에 userTrack 정보가 있다면 업데이트 할것.
+                        error_log("업데이트 왔니?");
+                        $db->updateLastUsedAtUserTrack($userNo, $trackNo);
+                        error_log("업데이트 했니?");
+                        $response["error"] = FALSE;
+                        error_log(json_encode($response));
+                        if(isset($_POST['recent'])) {
+                            echo json_encode($response);
+                        }
+                    } else {
+                        // 기존에 userTrack 정보가 없다면 추가할 것
+                        error_log("store 시도");
+                        $user_track = $db->storeUSERTrack($userNo, $trackNo);
+                        error_log("store 되야됨");
+                        // track stored successfully
+                        $response["error"] = FALSE;
+                        $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
+                        $response["track"]["start_poi"] = save_poi($response, $start_poi);
+                        $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
+                        $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
+                        $response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
+                        $response["track"]["created_at"] = $user_track["CREATED_AT"];
+                        $response["track"]["updated_at"] = $user_track["UPDATED_AT"];
+                        $response["track"]["last_used_at"] = $user_track["LAST_USED_AT"];
+                        if(isset($_POST['recent'])) {
+                            echo json_encode($response);
+                        }
+                    }
+
+                    if(isset($_POST['bookmark'])) {
                         if ($db->isUSER_BookMarkTRACKExisted($userNo, $trackNo)) {
-                            // 유저가 북마크한 검색 기록이 있는 경우 업데이트, 아닌 경우는 추가.
+                            // 유저가 북마크한 기록이 있는 경우 업데이트, 아닌 경우는 추가.
                             error_log("북마크 업데이트니?");
                             $user_bookmark = $db->updateLastUsedAtUserBookmarkTrack($userNo, $trackNo);
                             $response["error"] = FALSE;
@@ -87,35 +119,6 @@ if(isset($_POST['recent']) or isset($_POST['bookmark'])) {
                             $user_bookmark = $db->storeBookmarkUSERTrack($userNo, $trackNo);
                             $response["error"] = FALSE;
                             error_log(json_encode($response));
-                            echo json_encode($response);
-                        }
-                    }
-
-                    else if(isset($_POST['recent'])) {
-                        // start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_track table이 있는지 확인
-                        if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
-                            // 기존에 userTrack 정보가 있다면 업데이트 할것.
-                            error_log("업데이트 왔니?");
-                            $db->updateLastUsedAtUserTrack($userNo, $trackNo);
-                            error_log("업데이트 했니?");
-                            $response["error"] = FALSE;
-                            error_log(json_encode($response));
-                            echo json_encode($response);
-                        } else {
-                            // 기존에 userTrack 정보가 없다면 추가할 것
-                            error_log("store 시도");
-                            $user_track = $db->storeUSERTrack($userNo, $trackNo);
-                            error_log("store 되야됨");
-                            // track stored successfully
-                            $response["error"] = FALSE;
-                            $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
-                            $response["track"]["start_poi"] = save_poi($response, $start_poi);
-                            $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
-                            $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
-                            $response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
-                            $response["track"]["created_at"] = $user_track["CREATED_AT"];
-                            $response["track"]["updated_at"] = $user_track["UPDATED_AT"];
-                            $response["track"]["last_used_at"] = $user_track["LAST_USED_AT"];
                             echo json_encode($response);
                         }
                     } else {
