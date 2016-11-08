@@ -44,15 +44,15 @@ if (isset($_POST['email'])) {
 if(isset($user)) {
 	if ($user != false) {
 		$userNo = $user["USER_NO"];
-		error_log(json_encode($user));
+//		error_log(json_encode($user));
 		
 
 		// counting the total item available in the database
 		$total = $db->getCountOfUserPOIList($userNo);
-		error_log("total : ".$total);
+//		error_log("total : ".$total);
 		
 		$page = $_POST['page'];
-		error_log("page : ".$page);
+//		error_log("page : ".$page);
 		
 		// 페이징하기 위한 리스트뷰 첫번째 행
 		$start = 0;

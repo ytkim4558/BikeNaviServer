@@ -478,6 +478,37 @@ class DB_Functions {
 			return false;
 		}
 	}
+
+    // USER_TRACK 정보 업데이트
+    /**
+     *
+     * @param int $userNo 유저 번호
+     * @param int $trackNo 장소 번호
+     * @return array|boolean
+     */
+    public function updateLastUsedAtUserBookmarkTrack($userNo, $trackNo) {
+        $stmt = $this->conn->prepare("UPDATE USER_BOOKMARK_TRACK_TB SET LAST_USED_AT = NOW() WHERE TRACK_NO = ? AND USER_NO = ?");
+        $stmt->bind_param("ii", $trackNo, $userNo);
+        $result = $stmt->execute();
+        error_log(htmlspecialchars($stmt->error), 0);
+        $stmt->close();
+
+        // check for successful store
+        if($result) {
+            $stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
+            $stmt->bind_param("ii", $userNo, $trackNo);
+            if($stmt->execute()) {
+                $user_bookmark_track = $stmt->get_result()->fetch_assoc();
+                $stmt->close();
+
+                return $user_bookmark_track;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 	
 	// USER_TRACK 정보 업데이트
 	/**
@@ -498,10 +529,10 @@ class DB_Functions {
 			$stmt = $this->conn->prepare("SELECT * FROM USER_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
 			$stmt->bind_param("ii", $userNo, $trackNo);
 			if($stmt->execute()) {
-				$poi = $stmt->get_result()->fetch_assoc();
+				$user_track = $stmt->get_result()->fetch_assoc();
 				$stmt->close();
 	
-				return $poi;
+				return $user_track;
 			} else {
 				return false;
 			}
@@ -667,28 +698,34 @@ class DB_Functions {
 		$res = array();
 	
 		if($stmt->execute()) {
-			while($track = $stmt->get_result()->fetch_assoc()) {
-				// TRACK_TB : 경로 테이블
-				$query = "SELECT * FROM TRACK_TB WHERE TRACK_NO = ?";
-				$stmt2 = $this->conn->prepare($query);
-				$stmt2->bind_param("i", $track['TRACK_NO']);
-				if($stmt2->execute()) {
-					while($track_row = $stmt2->get_result()->fetch_assoc()) {
-                        $start_poi = $this->getPOIUsingPOIID($track_row["START_POI_NO"]);
-                        $dest_poi = $this->getPOIUsingPOIID($track_row["DEST_POI_NO"]);
-						array_push($res, array(
-								"bookmark_start_poi"=>$this->save_poi($start_poi),
-								"bookmark_dest_poi"=>$this->save_poi($dest_poi),
-								"bookmark_stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
-								"bookmark_created_at"=>$track_row["CREATED_AT"],
-								"bookmark_updated_at"=>$track_row["UPDATED_AT"],
-								"bookmark_last_used_at"=>$track_row["LAST_USED_AT"])
-								);
-					}
-					$stmt2->close();
-				}
-	
-			}
+            $result = $stmt->get_result();
+            if($result) {
+                while($user_bookmark_track = $result->fetch_assoc()) {
+                    // TRACK_TB : 경로 테이블
+                    $query = "SELECT * FROM TRACK_TB WHERE TRACK_NO = ?";
+                    $stmt2 = $this->conn->prepare($query);
+                    $stmt2->bind_param("i", $user_bookmark_track['TRACK_NO']);
+                    if($stmt2->execute()) {
+                        if($result2 = $stmt2->get_result()) {
+                            while($track_row = $result2->fetch_assoc()) {
+                                $start_poi = $this->getPOIUsingPOIID($track_row["START_POI_NO"]);
+                                $dest_poi = $this->getPOIUsingPOIID($track_row["DEST_POI_NO"]);
+                                array_push($res, array(
+                                        "start_poi"=>$this->save_poi($start_poi),
+                                        "dest_poi"=>$this->save_poi($dest_poi),
+                                        "stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
+                                        "created_at"=>$user_bookmark_track["CREATED_AT"],
+                                        "updated_at"=>$user_bookmark_track["UPDATED_AT"],
+                                        "last_used_at"=>$user_bookmark_track["LAST_USED_AT"],
+                                        "bookmarked"=>$this->isUSER_BookMarkTRACKExisted($userNo,$track_row['TRACK_NO']))
+                                );
+                            }
+                        }
+                        $stmt2->close();
+                    }
+                }
+            }
+
 			$stmt->close();
 			return $res;
 		} else {
@@ -818,7 +855,7 @@ class DB_Functions {
      */
     public function getRangeUserBookMarkPOIListUsingUserNo($userNo, $start, $limit) {
         // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
-        $query = "SELECT * FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT ?, ?";
+        $query = "SELECT * FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ? LIMIT ?, ?";
         error_log($query);
         error_log("query : ".$query);
         $stmt = $this->conn->prepare($query);
@@ -944,11 +981,12 @@ class DB_Functions {
                                         "start_poi" => $this->save_poi($this->getPOIUsingPOIID($track_row["START_POI_NO"])),
                                         "dest_poi" => $this->save_poi($this->getPOIUsingPOIID($track_row["DEST_POI_NO"])),
                                         "stop_list" => $track_row["STOP_POI_NO_ARRAY"],
-                                        "created_at" => $track_row["CREATED_AT"],
-                                        "updated_at" => $track_row["UPDATED_AT"],
-                                        "last_used_at" => $track_row["LAST_USED_AT"])
+                                        "created_at" => $user_track["CREATED_AT"],
+                                        "updated_at" => $user_track["UPDATED_AT"],
+                                        "last_used_at" => $user_track["LAST_USED_AT"],
+                                        "bookmarked" => $this->isUSER_BookMarkTRACKExisted($userNo, $track_row['TRACK_NO']))
                                 );
-                                error_log(json_encode($track_row));
+//                                error_log(json_encode($track_row));
                             }
                         }
                         $stmt2->close();
@@ -980,20 +1018,20 @@ class DB_Functions {
 		$res = array();
 	
 		if($stmt->execute()) {
-			while($track = $stmt->get_result()->fetch_assoc()) {
+			while($user_track = $stmt->get_result()->fetch_assoc()) {
 				// TRACK_TB : 경로 테이블
 				$query = "SELECT * FROM TRACK_TB WHERE NO = ?";
 				$stmt2 = $this->conn->prepare($query);
-				$stmt2->bind_param("i", $track['TRACK_NO']);
+				$stmt2->bind_param("i", $user_track['TRACK_NO']);
 				if($stmt2->execute()) {
 					while($track_row = $stmt2->get_result()->fetch_assoc()) {
 						array_push($res, array(
                                 "start_poi"=>$this->save_poi($this->getPOIUsingPOIID($track_row["START_POI_NO"])),
                                 "dest_poi"=>$this->save_poi($this->getPOIUsingPOIID($track_row["DEST_POI_NO"])),
 								"stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
-								"created_at"=>$track_row["CREATED_AT"],
-								"updated_at"=>$track_row["UPDATED_AT"],
-								"last_used_at"=>$track_row["LAST_USED_AT"])
+								"created_at"=>$user_track["CREATED_AT"],
+								"updated_at"=>$user_track["UPDATED_AT"],
+								"last_used_at"=>$user_track["LAST_USED_AT"])
 								);
 					}
 					$stmt2->close();
@@ -1079,6 +1117,33 @@ class DB_Functions {
 	}
 
     /**
+     * 유저가 북마크한 경로를 저장하는 함수
+     * @param $userNo  : 유저번호
+     * @param $trackNo : 경로 번호
+     * @return array|bool : 경로 저장되면 경로 리턴, 아니면 false
+     */
+    public function storeUSERBookmarkTrack($userNo, $trackNo) {
+        $stmt = $this->conn->prepare("INSERT INTO USER_BOOKMARK_TRACK_TB(USER_NO, TRACK_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
+        $stmt->bind_param("ii", $userNo, $trackNo);
+        $result = $stmt->execute();
+        error_log(htmlspecialchars($stmt->error), 0);
+        $stmt->close();
+
+        // check for successful store
+        if($result) {
+            $stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
+            $stmt->bind_param("ii", $userNo, $trackNo);
+            $stmt->execute();
+            $user_bookmark_track = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            return $user_bookmark_track;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 유저 경로 저장하는 함수
      * @param $userNo  : 유저번호
      * @param $trackNo : 경로 번호
@@ -1161,7 +1226,7 @@ class DB_Functions {
 	}
 
     /**
-     * Check user_poi is existed or not
+     * Check user_track is existed or not
      * @param $userNo : 유저 번호
      * @param $trackNo : 경로 번호
      * @return bool
@@ -1181,6 +1246,28 @@ class DB_Functions {
 			return false;
 		}
 	}
+
+    /**
+     * Check user_bookmark track is existed or not
+     * @param $userNo : 유저 번호
+     * @param $trackNo : 경로 번호
+     * @return bool
+     */
+    public function isUSER_BookMarkTRACKExisted($userNo, $trackNo) {
+        $stmt = $this->conn->prepare("SELECT USER_NO from USER_BOOKMARK_TRACK_TB WHERE USER_NO = ? AND TRACK_NO = ?");
+        $stmt->bind_param("ii", $userNo, $trackNo);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            // user existed
+            $stmt->close();
+            return true;
+        } else {
+            // user not existed
+            $stmt->close();
+            return false;
+        }
+    }
 
     /**
      * Check user_poi is existed or not

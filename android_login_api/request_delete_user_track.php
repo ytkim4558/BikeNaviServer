@@ -2,7 +2,7 @@
 // 장소를 추가하거나 갱신처리하는 페이지
 require_once 'include/DB_Functions.php';
 $db = new DB_Functions();
-error_log("reguest_delete_track_page 입니다~");
+error_log("reguest_delete_user_track_page 입니다~");
 
 // json response array
 $response = array("delete" => FALSE);
@@ -67,41 +67,37 @@ if(isset($user)) {
                     $trackNo = $track['TRACK_NO'];
                     // track already existed
                     // start_poi_no, dest_poi_no, stop_poi_no(optional)를 가진 user_track table이 있는지 확인
-                    if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
-                        // 기존에 userTrack 정보가 있다면 삭제할것
-                        if (isset($_POST['recent'])) {
+                    if(isset($_POST['bookmark'])) {
+                        if($db->isUSER_BookMarkTRACKExisted($userNo, $trackNo)) {
+                            if($db->deleteUSERBookmarkTrack($userNo, $trackNo)) {
+                                $response["error"] = FALSE;
+                                echo json_encode($response);
+                            } else {
+                                $response["error"] = TRUE;
+                                $response["error_msg"] = "제거 실패!";
+                                echo json_encode($response);
+                            }
+                        } else {
+                            $response["error"] = TRUE;
+                            $response["error_msg"] = "유저 북마크 경로가 존재하지 않습니다.!";
+                            echo json_encode($response);
+                        }
+                    } else if(isset($_POST['recent'])) {
+                        if ($db->isUSER_TRACKExisted($userNo, $trackNo)) {
+                            // 기존에 userTrack 정보가 있다면 삭제할것
                             $db->deleteUSERTrack($userNo, $trackNo);
-                        } else if ($_POST['bookmark']) {
-                            $db->deleteUSERBookmarkTrack($userNo, $trackNo);
+                            $response["error"] = FALSE;
+                            $response["error_msg"] = "user_track 제거";
+                            echo json_encode($response);
                         } else {
                             $response["error"] = TRUE;
                             $response["error_msg"] = "recent, bookmark 누락.!";
                             echo json_encode($response);
                         }
                     } else {
-                        // 기존에 userTrack 정보가 없다면 추가할 것
-                        if ($_POST['recent']) {
-                            error_log("store 시도");
-                            $db->storeUSERTrack($userNo, $trackNo);
-                            error_log("store 되야됨");
-                            // track stored successfully
-                            $response["error"] = FALSE;
-                            $start_poi = $db->getPOIUsingPOIID($track["START_POI_NO"]);
-                            $response["track"]["start_poi"] = save_poi($response, $start_poi);
-                            $dest_poi = $db->getPOIUsingPOIID($track["DEST_POI_NO"]);
-                            $response["track"]["dest_poi"] = save_poi($response, $dest_poi);
-                            $response["track"]["stop_poi_no_array"] = $track["STOP_POI_NO_ARRAY"];
-                            $response["track"]["created_at"] = $track["CREATED_AT"];
-                            $response["track"]["updated_at"] = $track["UPDATED_AT"];
-                            $response["track"]["last_used_at"] = $track["LAST_USED_AT"];
-                            echo json_encode($response);
-                        } else if ($_POST['bookmark']) {
-                            $db->deleteUSERBookmarkTrack($userNo, $trackNo);
-                        } else {
-                            $response["error"] = TRUE;
-                            $response["error_msg"] = "recent, bookmark 누락.!";
-                            echo json_encode($response);
-                        }
+                        $response["error"] = TRUE;
+                        $response["error_msg"] = "recent 또는 bookmark 인자가 없습니다!";
+                        echo json_encode($response);
                     }
                 } else {
                     $response["error"] = TRUE;
@@ -130,7 +126,6 @@ if(isset($user)) {
                     echo json_encode($response);
                 }
             }
-
         } else {
             $response["error"] = TRUE;
             $response["error_msg"] = "경로 정보가 없습니다!";

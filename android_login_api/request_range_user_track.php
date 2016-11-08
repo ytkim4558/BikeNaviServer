@@ -83,6 +83,7 @@ if(isset($user)) {
         } else {
             $response["error"] = TRUE;
             $response["error_msg"] = "개수가 초과되었습니다!";
+            echo json_encode($response);
         }
 	}
 } else {
