@@ -127,4 +127,3 @@ function save_poi($response, $poi) {
 		return false;
 	}
 }
-?>

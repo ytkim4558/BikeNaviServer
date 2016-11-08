@@ -1144,6 +1144,34 @@ class DB_Functions {
     }
 
     /**
+     * 유저 에러 저장하는 함수
+     * @param $userNo : 유저번호
+     * @param $errorMessage : 에러 메시지
+     * @return array|bool : 경로 저장되면 경로 리턴, 아니면 false
+     */
+    public function storeUSERErrorMessage($userNo, $errorMessage) {
+        $stmt = $this->conn->prepare("INSERT INTO USER_CLIENT_ERROR_REPORT(USER_NO, MESSAGE, CREATED_AT) VALUES(?, ?, NOW() )");
+        $stmt->bind_param("is", $userNo, $errorMessage);
+        $result = $stmt->execute();
+        error_log(htmlspecialchars($stmt->error), 0);
+        $stmt->close();
+
+        // check for successful store
+        if($result) {
+            $stmt = $this->conn->prepare("SELECT * FROM USER_CLIENT_ERROR_REPORT WHERE USER_NO = ? AND MESSAGE = ?");
+            $stmt->bind_param("is", $userNo, $errorMessage);
+            $stmt->execute();
+            $user_error = $stmt->get_result()->fetch_assoc();
+            error_log(json_encode($user_error));
+            $stmt->close();
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 유저 경로 저장하는 함수
      * @param $userNo  : 유저번호
      * @param $trackNo : 경로 번호
@@ -1470,5 +1498,3 @@ class DB_Functions {
 		return $hash;
 	}
 }
-
-?>
