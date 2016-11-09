@@ -54,24 +54,45 @@ if(isset($user)) {
 			$poiNo = $poi["POI_NO"];
 			// track already existed
 			// poiNo userNo를 가진 user_poi table이 있는지 확인
-			if ($db->isUSER_POIExisted($userNo, $poiNo)) {
-				$result = $db->deleteUSERPOIAtUserPOI($userNo, $poiNo);
-				if($result) {
-					$response["delete"] = TRUE;
-					$response["delete_msg"] = "유저 - 장소가 삭제되었습니다..";
-                    error_log("유저 - 장소가 삭제되었습니다..");
-					echo json_encode($response);
-				} else {
-					$response["delete"] = FALSE;
-					$response["delete_msg"] = "유저 - 장소가 삭제되지 않았습니다.";
-                    error_log("유저 - 장소가 삭제되지 않았습니다.");
-					echo json_encode($response);
-				}
-			} else {
-				$response["delete"] = FALSE;
-				$response["delete_msg"] = "유저 - 장소가  존재하지 않았습니다.";
-				echo json_encode($response);
-			}
+            if(isset($_POST['bookmark'])) {
+                if ($db->isUSER_BookMarkPOIExisted($userNo, $poiNo)) {
+                    $result = $db->deleteUSERBookmarkPOI($userNo, $poiNo);
+                    if($result) {
+                        $response["delete"] = TRUE;
+                        $response["delete_msg"] = "유저 - 북마크 장소가 삭제되었습니다..";
+                        error_log("유저 - 북마크 장소가 삭제되었습니다..");
+                        echo json_encode($response);
+                    } else {
+                        $response["delete"] = FALSE;
+                        $response["delete_msg"] = "유저 - 북마크 장소가 삭제되지 않았습니다.";
+                        error_log("유저 - 북마크 장소가 삭제되지 않았습니다.");
+                        echo json_encode($response);
+                    }
+                } else {
+                    $response["delete"] = FALSE;
+                    $response["delete_msg"] = "유저 - 북마크 장소가  존재하지 않았습니다.";
+                    echo json_encode($response);
+                }
+            } else if(isset($_POST['recent'])) {
+                if ($db->isUSER_POIExisted($userNo, $poiNo)) {
+                    $result = $db->deleteUSERPOIAtUserPOI($userNo, $poiNo);
+                    if($result) {
+                        $response["delete"] = TRUE;
+                        $response["delete_msg"] = "유저 - 장소가 삭제되었습니다..";
+                        error_log("유저 - 장소가 삭제되었습니다..");
+                        echo json_encode($response);
+                    } else {
+                        $response["delete"] = FALSE;
+                        $response["delete_msg"] = "유저 - 장소가 삭제되지 않았습니다.";
+                        error_log("유저 - 장소가 삭제되지 않았습니다.");
+                        echo json_encode($response);
+                    }
+                } else {
+                    $response["delete"] = FALSE;
+                    $response["delete_msg"] = "유저 - 장소가  존재하지 않았습니다.";
+                    echo json_encode($response);
+                }
+            }
 		} else {
 			$response["delete"] = FALSE;
 			$response["delete_msg"] = "장소가 존재하지 않습니다.";

@@ -479,11 +479,42 @@ class DB_Functions {
 		}
 	}
 
-    // USER_TRACK 정보 업데이트
+    // USER_BOOKMARKPOI 정보 업데이트
     /**
      *
      * @param int $userNo 유저 번호
-     * @param int $trackNo 장소 번호
+     * @param int $poiNo 장소 번호
+     * @return array|boolean
+     */
+    public function updateLastUsedAtUserBookmarkPOI($userNo, $poiNo) {
+        $stmt = $this->conn->prepare("UPDATE USER_BOOKMARK_POI_TB SET LAST_USED_AT = NOW() WHERE NO = ? AND USER_NO = ?");
+        $stmt->bind_param("ii", $poiNo, $userNo);
+        $result = $stmt->execute();
+        error_log(htmlspecialchars($stmt->error), 0);
+        $stmt->close();
+
+        // check for successful store
+        if($result) {
+            $stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_POI_TB WHERE POI_NO = ? AND TRACK_NO = ?");
+            $stmt->bind_param("ii", $userNo, $poiNo);
+            if($stmt->execute()) {
+                $user_bookmark_track = $stmt->get_result()->fetch_assoc();
+                $stmt->close();
+
+                return $user_bookmark_track;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    // USER_BOOKMARKTRACK 정보 업데이트
+    /**
+     *
+     * @param int $userNo 유저 번호
+     * @param int $trackNo 경로 번호
      * @return array|boolean
      */
     public function updateLastUsedAtUserBookmarkTrack($userNo, $trackNo) {
@@ -717,7 +748,7 @@ class DB_Functions {
                                         "created_at"=>$user_bookmark_track["CREATED_AT"],
                                         "updated_at"=>$user_bookmark_track["UPDATED_AT"],
                                         "last_used_at"=>$user_bookmark_track["LAST_USED_AT"],
-                                        "bookmarked"=>$this->isUSER_BookMarkTRACKExisted($userNo,$track_row['TRACK_NO']))
+                                        "bookmarked"=>true)
                                 );
                             }
                         }
@@ -882,7 +913,8 @@ class DB_Functions {
                                 "poiLatLng"=>$poi["POI_LAT_LNG"],
                                 "created_at"=>$user_poi_row["CREATED_AT"],
                                 "updated_at"=>$user_poi_row["UPDATED_AT"],
-                                "last_used_at"=>$user_poi_row["LAST_USED_AT"])
+                                "last_used_at"=>$user_poi_row["LAST_USED_AT"],
+                                 "bookmarked"=>true)
                         );
                         $stmt2->close();
                     }
@@ -931,7 +963,8 @@ class DB_Functions {
 								"poiLatLng"=>$poi["POI_LAT_LNG"],
 								"created_at"=>$user_poi_row["CREATED_AT"],
 								"updated_at"=>$user_poi_row["UPDATED_AT"],
-								"last_used_at"=>$user_poi_row["LAST_USED_AT"])
+								"last_used_at"=>$user_poi_row["LAST_USED_AT"],
+                                "bookmarked"=>$this->isUSER_BookMarkPOIExisted($userNo,$poi['POI_NO']))
 								);
 						$stmt2->close();
 					}
@@ -997,7 +1030,7 @@ class DB_Functions {
                 return NULL;
             }
 			$stmt->close();
-            error_log(json_encode($res));
+//            error_log(json_encode($res));
 			return json_encode($res);
 		} else {
 			return NULL;
@@ -1044,6 +1077,31 @@ class DB_Functions {
 			return NULL;
 		}
 	}
+
+    /**
+     * Storing new user_bookmark_poi
+     * return user_bookmark_poi details
+     */
+    public function storeBookmarkUSERPOI($userNo, $poiNo) {
+        $stmt = $this->conn->prepare("INSERT INTO USER_BOOKMARK_POI_TB(USER_NO, POI_NO, CREATED_AT, UPDATED_AT, LAST_USED_AT) VALUES(?, ?, NOW(), NOW(), NOW())");
+        $stmt->bind_param("ii", $userNo, $poiNo);
+        $result = $stmt->execute();
+        error_log(htmlspecialchars($stmt->error), 0);
+        $stmt->close();
+
+        // check for successful store
+        if($result) {
+            $stmt = $this->conn->prepare("SELECT * FROM USER_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
+            $stmt->bind_param("ii", $userNo, $poiNo);
+            $stmt->execute();
+            $user_poi = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            return $user_poi;
+        } else {
+            return false;
+        }
+    }
 	
 	/**
 	 * Storing new user_bookmark_track
@@ -1071,7 +1129,28 @@ class DB_Functions {
 	}
 
     /**
-     * Storing new user_bookmark track
+     * Deleting new user_bookmark track
+     * @param $userNo : 유저 번호
+     * @param $poiNo : 장소 번호
+     * @return bool
+     */
+    public function deleteUSERBookmarkPOI($userNo, $poiNo) {
+        $stmt = $this->conn->prepare("DELETE FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
+        $stmt->bind_param("ii", $userNo, $poiNo);
+        $result = $stmt->execute();
+        error_log(htmlspecialchars($stmt->error), 0);
+        $stmt->close();
+
+        // check for successful delete
+        if($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Deleting new user_bookmark track
      * @param $userNo : 유저 번호
      * @param $trackNo : 경로 번호
      * @return bool
@@ -1274,6 +1353,28 @@ class DB_Functions {
 			return false;
 		}
 	}
+
+    /**
+     * Check user_bookmark poi is existed or not
+     * @param $userNo : 유저 번호
+     * @param $poiNo : 장소 번호
+     * @return bool
+     */
+    public function isUSER_BookMarkPOIExisted($userNo, $poiNo) {
+        $stmt = $this->conn->prepare("SELECT USER_NO from USER_BOOKMARK_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
+        $stmt->bind_param("ii", $userNo, $poiNo);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            // user existed
+            $stmt->close();
+            return true;
+        } else {
+            // user not existed
+            $stmt->close();
+            return false;
+        }
+    }
 
     /**
      * Check user_bookmark track is existed or not

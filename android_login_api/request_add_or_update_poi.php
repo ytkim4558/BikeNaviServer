@@ -58,7 +58,9 @@ if(isset($user)) {
 				$user_poi = $db->updateLastUsedAtUserPOI($userNo, $poiNo);
 				if($user_poi) {
 					$response = save_poi($response, $poi);
-					echo json_encode($response);
+                    if(isset($_POST['recent'])) {
+                        echo json_encode($response);
+                    }
 				} else {
 					$response["error"] = TRUE;
 					$response["error_msg"] = "유저 - 장소가 갱신되지 않았습니다.";
@@ -68,13 +70,35 @@ if(isset($user)) {
 				$user_poi = $db->storeUSERPOI($userNo, $poiNo);
 				if($user_poi) {
 					$response = save_poi($response, $poi);
-					echo json_encode($response);
+                    if(isset($_POST['recent'])) {
+                        echo json_encode($response);
+                    }
 				} else {
 					$response["error"] = TRUE;
 					$response["error_msg"] = "유저 - 장소가 저장되지 않았습니다.";
 					echo json_encode($response);
 				}
 			}
+			if(isset($_POST['bookmark'])) {
+                if($db->isUSER_BookMarkPOIExisted($userNo, $poiNo)) {
+                    // 유저가 북마크한 기록이 있는 경우 업데이트, 아닌 경우는 추가.
+                    error_log("북마크 업데이트니?");
+                    $user_bookmark = $db->updateLastUsedAtUserBookmarkPOI($userNo, $poiNo);
+                    $response["error"] = FALSE;
+                    error_log(json_encode($response));
+                    echo json_encode($response);
+                } else {
+                    error_log("북마크 저장하니?");
+                    $user_bookmark = $db->storeBookmarkUSERPOI($userNo, $poiNo);
+                    $response["error"] = FALSE;
+                    error_log(json_encode($response));
+                    echo json_encode($response);
+                }
+            } else {
+                $response["error"] = TRUE;
+                $response["error_msg"] = "recent와 post가 없네요 뉴뉴 !";
+                echo json_encode($response);
+            }
 		} else {
 			// create a new POI
 			$poi = $db->storePOI($poiLatLng, $poiName, $poiAddress);

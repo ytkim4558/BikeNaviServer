@@ -1,7 +1,7 @@
 <?php
-require_once './android_login_api/include/DB_Config.php';
+require_once './android_login_api/include/DB_Functions.php';
 $db = new DB_Functions();
-error_log("reguest_add_or_update_poi_page 입니다~");
+error_log("bikenavi_android_client_error_log 입니다~");
 
 // json response array
 $response = array("error" => FALSE);

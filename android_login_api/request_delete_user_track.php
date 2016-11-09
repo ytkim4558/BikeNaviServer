@@ -87,7 +87,6 @@ if(isset($user)) {
                             // 기존에 userTrack 정보가 있다면 삭제할것
                             $db->deleteUSERTrack($userNo, $trackNo);
                             $response["error"] = FALSE;
-                            $response["error_msg"] = "user_track 제거";
                             echo json_encode($response);
                         } else {
                             $response["error"] = TRUE;
