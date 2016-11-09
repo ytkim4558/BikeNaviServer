@@ -5,7 +5,7 @@ $db = new DB_Functions();
 error_log("reguest_add_or_update_poi_page 입니다~");
 
 // json response array
-$response = array("delete" => FALSE);
+$response = array("error" => FALSE);
 
 // 유저정보 타입 확인
 if (isset($_POST['email'])) {
@@ -34,8 +34,8 @@ if (isset($_POST['email'])) {
 	$user = $db->getFacebookUserByID($facebookid);
 } else {
 	// required post params is missing
-	$response["delete"] = TRUE;
-	$response["delete_msg"] = "필수 항목인 유저정보나 페이지가 누락되었습니다!";
+	$response["error"] = TRUE;
+	$response["error_msg"] = "필수 항목인 유저정보나 페이지가 누락되었습니다!";
 	echo json_encode($response);
 }
 
@@ -56,56 +56,53 @@ if(isset($user)) {
 			// poiNo userNo를 가진 user_poi table이 있는지 확인
             if(isset($_POST['bookmark'])) {
                 if ($db->isUSER_BookMarkPOIExisted($userNo, $poiNo)) {
-                    $result = $db->deleteUSERBookmarkPOI($userNo, $poiNo);
-                    if($result) {
-                        $response["delete"] = TRUE;
-                        $response["delete_msg"] = "유저 - 북마크 장소가 삭제되었습니다..";
+                    if($db->deleteUSERBookmarkPOI($userNo, $poiNo)) {
+                        $response["error"] = FALSE;
                         error_log("유저 - 북마크 장소가 삭제되었습니다..");
                         echo json_encode($response);
                     } else {
-                        $response["delete"] = FALSE;
-                        $response["delete_msg"] = "유저 - 북마크 장소가 삭제되지 않았습니다.";
+                        $response["error"] = TRUE;
+                        $response["error_msg"] = "유저 - 북마크 장소가 삭제되지 않았습니다.";
                         error_log("유저 - 북마크 장소가 삭제되지 않았습니다.");
                         echo json_encode($response);
                     }
                 } else {
-                    $response["delete"] = FALSE;
-                    $response["delete_msg"] = "유저 - 북마크 장소가  존재하지 않았습니다.";
+                    $response["error"] = TRUE;
+                    $response["error_msg"] = "유저 - 북마크 장소가  존재하지 않았습니다.";
                     echo json_encode($response);
                 }
             } else if(isset($_POST['recent'])) {
                 if ($db->isUSER_POIExisted($userNo, $poiNo)) {
                     $result = $db->deleteUSERPOIAtUserPOI($userNo, $poiNo);
                     if($result) {
-                        $response["delete"] = TRUE;
-                        $response["delete_msg"] = "유저 - 장소가 삭제되었습니다..";
+                        $response["error"] = FALSE;
                         error_log("유저 - 장소가 삭제되었습니다..");
                         echo json_encode($response);
                     } else {
-                        $response["delete"] = FALSE;
-                        $response["delete_msg"] = "유저 - 장소가 삭제되지 않았습니다.";
+                        $response["error"] = TRUE;
+                        $response["error_msg"] = "유저 - 장소가 삭제되지 않았습니다.";
                         error_log("유저 - 장소가 삭제되지 않았습니다.");
                         echo json_encode($response);
                     }
                 } else {
-                    $response["delete"] = FALSE;
-                    $response["delete_msg"] = "유저 - 장소가  존재하지 않았습니다.";
+                    $response["error"] = TRUE;
+                    $response["error_msg"] = "유저 - 장소가  존재하지 않았습니다.";
                     echo json_encode($response);
                 }
             }
 		} else {
-			$response["delete"] = FALSE;
-			$response["delete_msg"] = "장소가 존재하지 않습니다.";
+			$response["error"] = TRUE;
+			$response["error_msg"] = "장소가 존재하지 않습니다.";
 			echo json_encode($response);
 		}
 	} else {
-		$response["delete"] = FALSE;
-		$response["delete_msg"] = "필수정보인 장소 인수가 올바른지 확인해보세요!";
+		$response["error"] = TRUE;
+		$response["error_msg"] = "필수정보인 장소 인수가 올바른지 확인해보세요!";
 		echo json_encode($response);
 	}
 } else {
-	$response["delete"] = FALSE;
-	$response["delete_msg"] = "경로를 등록하거나 갱신하는데 필수정보가 없습니다.";
+    $response["error"] = TRUE;
+	$response["error_msg"] = "경로를 등록하거나 갱신하는데 필수정보가 없습니다.";
 	echo json_encode($response);
 }
 ?>

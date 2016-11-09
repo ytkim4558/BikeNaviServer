@@ -5,7 +5,7 @@ $db = new DB_Functions();
 error_log("reguest_delete_user_track_page 입니다~");
 
 // json response array
-$response = array("delete" => FALSE);
+$response = array("error" => FALSE);
 
 // 유저정보 타입 확인
 if (isset($_POST['email'])) {
