@@ -880,6 +880,53 @@ class DB_Functions {
 
     /**
      * @param $userNo : 유저번호
+     * @return array|null : 유저별 장소리스트에서 범위별
+     */
+    public function getLastUserPOI($userNo) {
+        // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
+        $query = "SELECT * FROM USER_POI_TB WHERE USER_NO = ? ORDER BY LAST_USED_AT DESC LIMIT 1";
+        error_log("query : ".$query);
+        $stmt = $this->conn->prepare($query);
+
+        // 유저번호, 리스트 보이는 부분 시작 위치, 리스트 보이는부분 끝 위치
+        $stmt->bind_param("i", $userNo);
+
+        // arraydp 결과 삽입 (참고 : https://www.simplifiedcoding.net/android-feed-example-using-php-mysql-volley/)
+        $user_poi = null;
+
+        if($stmt->execute()) {
+            if($result = $stmt->get_result()) {
+                $user_poi_row = $result->fetch_assoc();
+                if($user_poi_row) {
+                    // POI_TB : 경로 테이블
+                    $query = "SELECT * FROM POI_TB WHERE POI_NO = ?";
+                    $stmt2 = $this->conn->prepare($query);
+                    $stmt2->bind_param("i", $user_poi_row['POI_NO']);
+                    if($stmt2->execute()) {
+                        $poi = $stmt2->get_result()->fetch_assoc();
+                        error_log(json_encode($poi));
+                        $user_poi["POI_NAME"] = $poi["POI_NAME"];
+                        $user_poi["POI_ADDRESS"] = $poi["POI_ADDRESS"];
+                        $user_poi["POI_LAT_LNG"] = $poi["POI_LAT_LNG"];
+                        $user_poi["CREATED_AT"] = $user_poi_row["CREATED_AT"];
+                        $user_poi["UPDATED_AT"] = $user_poi_row["UPDATED_AT"];
+                        $user_poi["LAST_USED_AT"] = $user_poi_row["LAST_USED_AT"];
+                        $user_poi["bookmarked"] = $this->isUSER_BookMarkPOIExisted($userNo, $poi["POI_NO"]);
+                        $stmt2->close();
+                    }
+                }
+            } else {
+                error_log("get_result is nothing?");
+            }
+            $stmt->close();
+            return $user_poi;
+        } else {
+            return NULL;
+        }
+    }
+
+    /**
+     * @param $userNo : 유저번호
      * @param $start : 시작번호
      * @param $limit : 가져올 아이템 개수
      * @return array|null : 유저별 장소리스트에서 범위별
