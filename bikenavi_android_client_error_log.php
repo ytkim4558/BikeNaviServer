@@ -1,5 +1,6 @@
 <?php
 require_once './android_login_api/include/DB_Functions.php';
+require_once 'phpmailsample.php';
 $db = new DB_Functions();
 error_log("bikenavi_android_client_error_log 입니다~");
 
@@ -47,6 +48,7 @@ if (isset($_POST['MESSAGE'])) {
     $message = $_POST['MESSAGE'];
     // check if poi is already existed with the same poiLatLNg
     $result = $db->storeUSERErrorMessage($userNo, $message);
+
     if($result) {
         $response["error"] = FALSE;
         echo json_encode($response);
@@ -55,6 +57,13 @@ if (isset($_POST['MESSAGE'])) {
         $response["error_msg"] = "유저 - 에러가 저장되지 않았습니다.";
         echo json_encode($response);
     }
+
+    /**
+     * 이메일 전송 기능 추가
+     */
+    $mail = new sendMailUsingPhpMailer();
+    $mail->sendMail('bikenavi 클라이언트 에러', $message);
+
 } else {
     $response["error"] = TRUE;
     $response["error_msg"] = "메시지 정보가 없습니다!";

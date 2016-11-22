@@ -33,6 +33,7 @@ if (isset($_POST['email'])) {
 } else {
 	// required post params is missing
 	$response["error"] = TRUE;
+    $response["non_result"] = FALSE;
 	$response["error_msg"] = "필수 항목인 유저정보나 페이지가 누락되었습니다!";
 	echo json_encode($response);
 }
@@ -41,9 +42,13 @@ if(isset($user)) {
 	if ($user != false) {
 		$userNo = $user["USER_NO"];
 
-        // counting the total item available in the database
-        $total = $db->getCountOfUserTrackList($userNo);
-        error_log("total : ".$total);
+        $total = null;
+        if(isset($_POST['recent'])) {
+            // counting the total item available in the database
+            $total = $db->getCountOfUserTrackList($userNo);
+        } else if(isset($_POST['bookmark'])) {
+            $total = $db->getCountOfUserBookmarkTrackList($userNo);
+        }
 
         $page = $_POST['page'];
 
@@ -55,6 +60,7 @@ if(isset($user)) {
 
         // 최대 갈 수 있는 페이지
         $page_limit = ceil($total/$limit);
+        error_log("page".$page . ", pageLimit: " . $page_limit);
 
         // 만약 페이지 숫자가 우리가 보지못하는 것보다 더 작은 경우
         if($page <= $page_limit) {
@@ -68,6 +74,7 @@ if(isset($user)) {
                     $response["error"] = FALSE;
                 } else {
                     $response["error"] = TRUE;
+                    $response["error_msg"] = "요청한 북마크 리스트가 없습니다!";
                 }
                 echo json_encode($response);
             } else if(isset($_POST['recent'])) {
@@ -77,17 +84,26 @@ if(isset($user)) {
                     $response["error"] = FALSE;
                 } else {
                     $response["error"] = TRUE;
+                    $response["non_result"] = FALSE;
+                    $response["error_msg"] = "요청한 리스트가 없습니다!";
                 }
                 echo json_encode($response);
             }
-        } else {
+        }  else if($page_limit == 0) {
             $response["error"] = TRUE;
-            $response["error_msg"] = "개수가 초과되었습니다!";
+            $response["non_result"] = TRUE;
+            echo json_encode($response);
+        }
+        else {
+            $response["error"] = TRUE;
+            $response["non_result"] = FALSE;
+            $response["error_msg"] = "리스트 끝입니다!";
             echo json_encode($response);
         }
 	}
 } else {
     $response["error"] = TRUE;
+    $response["non_result"] = FALSE;
     $response["error_msg"] = "유저정보가 없습니다.!";
     echo json_encode($response);
 }

@@ -19,7 +19,7 @@ if (isset($_POST['email'])) {
 } else if (isset($_POST['googleemail'])) {
 	// receiving the post params
 	$googleemail = $_POST['googleemail'];
-	
+
 	// get the user by email
 	$user = $db->getGoogleUserByEmail($googleemail);
 } else if (isset($_POST['kakaoid'])) {
@@ -37,6 +37,7 @@ if (isset($_POST['email'])) {
 } else {
 	// required get params is missing
 	$response["error"] = TRUE;
+    $response["non_result"] = FALSE;
 	$response["error_msg"] = "필수 항목인 유저정보나 페이지가 누락되었습니다!";
 	echo json_encode($response);
 }
@@ -46,9 +47,13 @@ if(isset($user)) {
 		$userNo = $user["USER_NO"];
 //		error_log(json_encode($user));
 		
-
+        $total = null;
 		// counting the total item available in the database
-		$total = $db->getCountOfUserPOIList($userNo);
+        if(isset($_POST['recent'])) {
+            $total = $db->getCountOfUserPOIList($userNo);
+        } else if(isset($_POST['bookmark'])) {
+            $total = $db->getCountOfUserBookmarkPOIList($userNo);
+        }
 //		error_log("total : ".$total);
 		
 		$page = $_POST['page'];
@@ -58,7 +63,7 @@ if(isset($user)) {
 		$start = 0;
 		
 		// 페이징하기 위한 리스트뷰 아이템 개수
-		$limit = 7;
+		$limit = 8;
 		
 		// 최대 갈 수 있는 페이지
 		$page_limit = ceil($total/$limit);
@@ -81,17 +86,26 @@ if(isset($user)) {
 				// 최근 경로 리스트 요청할 때
 				error_log("recent");
 				$response["error"] = FALSE;
+                $response["non_result"] = FALSE;
 				$response['recent'] = $db->getRangeUserRecentPOIListUsingUserNo($userNo, $start, $limit);
 				echo json_encode($response);
 			}
-		} else {
+		} else if($page_limit == 0) {
+            $response["error"] = TRUE;
+            $response["non_result"] = TRUE;
+            echo json_encode($response);
+        }
+		else {
 			$response["error"] = TRUE;
-			$response["error_msg"] = "개수가 초과되었습니다!";
+            $response["non_result"] = FALSE;
+			$response["error_msg"] = "리스트 끝입니다!";
             error_log("개수가 초과되었어");
+            echo json_encode($response);
 		}
 	}
 } else {
 	$response["error"] = TRUE;
+    $response["non_result"] = FALSE;
 	$response["error_msg"] = "유저정보가 없습니다.!";
 	echo json_encode($response);
 }

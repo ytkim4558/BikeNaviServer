@@ -41,6 +41,7 @@ if (isset($_POST['email'])) {
 
 if(isset($user)) {
     $userNo = $user['USER_NO'];
+    $poi = false;
     // check if poi is already existed with the same poiLatLNg
     if($poi = $db->getLastUserPOI($userNo)) {
         $response = save_poi($response, $poi);

@@ -487,7 +487,7 @@ class DB_Functions {
      * @return array|boolean
      */
     public function updateLastUsedAtUserBookmarkPOI($userNo, $poiNo) {
-        $stmt = $this->conn->prepare("UPDATE USER_BOOKMARK_POI_TB SET LAST_USED_AT = NOW() WHERE NO = ? AND USER_NO = ?");
+        $stmt = $this->conn->prepare("UPDATE USER_BOOKMARK_POI_TB SET LAST_USED_AT = NOW() WHERE POI_NO = ? AND USER_NO = ?");
         $stmt->bind_param("ii", $poiNo, $userNo);
         $result = $stmt->execute();
         error_log(htmlspecialchars($stmt->error), 0);
@@ -495,7 +495,7 @@ class DB_Functions {
 
         // check for successful store
         if($result) {
-            $stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_POI_TB WHERE POI_NO = ? AND TRACK_NO = ?");
+            $stmt = $this->conn->prepare("SELECT * FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ? AND POI_NO = ?");
             $stmt->bind_param("ii", $userNo, $poiNo);
             if($stmt->execute()) {
                 $user_bookmark_track = $stmt->get_result()->fetch_assoc();
@@ -739,11 +739,9 @@ class DB_Functions {
                     if($stmt2->execute()) {
                         if($result2 = $stmt2->get_result()) {
                             while($track_row = $result2->fetch_assoc()) {
-                                $start_poi = $this->getPOIUsingPOIID($track_row["START_POI_NO"]);
-                                $dest_poi = $this->getPOIUsingPOIID($track_row["DEST_POI_NO"]);
                                 array_push($res, array(
-                                        "start_poi"=>$this->save_poi($start_poi),
-                                        "dest_poi"=>$this->save_poi($dest_poi),
+                                        "start_poi"=>$this->save_poi($this->getPOIUsingPOIID($track_row["START_POI_NO"])),
+                                        "dest_poi"=>$this->save_poi($this->getPOIUsingPOIID($track_row["DEST_POI_NO"])),
                                         "stop_list"=>$track_row["STOP_POI_NO_ARRAY"],
                                         "created_at"=>$user_bookmark_track["CREATED_AT"],
                                         "updated_at"=>$user_bookmark_track["UPDATED_AT"],
@@ -830,6 +828,32 @@ class DB_Functions {
      * @param $userNo : 유저아이디
      * @return int | null 유저가 검색한 장소리스트 개수
      */
+    public function getCountOfUserBookmarkTrackList($userNo) {
+        // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
+        $query = "SELECT * FROM USER_BOOKMARK_TRACK_TB WHERE USER_NO = ?";
+        $stmt = $this->conn->prepare($query);
+
+        // 유저번호
+        $stmt->bind_param("i", $userNo);
+
+        /* 쿼리 실행 */
+        if($stmt->execute()) {
+            /* 결과 저장*/
+            $stmt->store_result();
+
+            $res = $stmt->num_rows;
+
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
+
+    /**
+     * @param $userNo : 유저아이디
+     * @return int | null 유저가 검색한 장소리스트 개수
+     */
     public function getCountOfUserTrackList($userNo) {
         // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
         $query = "SELECT * FROM USER_TRACK_TB WHERE USER_NO = ?";
@@ -851,10 +875,36 @@ class DB_Functions {
             return NULL;
         }
     }
+
+    /**
+     * @param $userNo : 유저아이디
+     * @return int | null 유저가 즐겨찾기한 장소리스트 개수
+     */
+    public function getCountOfUserBookmarkPOIList($userNo) {
+        // USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
+        $query = "SELECT * FROM USER_BOOKMARK_POI_TB WHERE USER_NO = ?";
+        $stmt = $this->conn->prepare($query);
+
+        // 유저번호
+        $stmt->bind_param("i", $userNo);
+
+        /* 쿼리 실행 */
+        if($stmt->execute()) {
+            /* 결과 저장*/
+            $stmt->store_result();
+
+            $res = $stmt->num_rows;
+
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
 	
 	/**
 	 * @param $userNo : 유저아이디
-	 * @return int | null 유저가 검색한 장소리스트 개수
+	 * @return int | null 유저가 이용한 장소리스트 개수
 	 */
 	public function getCountOfUserPOIList($userNo) {
 		// USER_BOOKMARK_TB : 유저가 즐겨찾기한 경로 테이블
@@ -1288,7 +1338,7 @@ class DB_Functions {
             $stmt->bind_param("is", $userNo, $errorMessage);
             $stmt->execute();
             $user_error = $stmt->get_result()->fetch_assoc();
-            error_log(json_encode($user_error));
+//            error_log(json_encode($user_error));
             $stmt->close();
 
             return true;
