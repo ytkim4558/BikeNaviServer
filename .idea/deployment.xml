@@ -1,32 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="BIKENAVISERVER (2)" deleteMissingItems="true" createEmptyFolders="true" exclude="" notifyRemoteChanges="true">
+  <component name="PublishConfigData" autoUpload="Always" promptOnRemoteOverwrite="CHECK_CONTENT" serverName="BIKENAVISERVER (2)" deleteMissingItems="true" createEmptyFolders="true" exclude="" notifyRemoteChanges="true" compareModeInSync="TIMESTAMP" showNewOnTargetInSync="false">
     <serverData>
-      <paths name="BIKENAVISERVER">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="BIKENAVISERVER (1)">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="BIKENAVISERVER (2)">
         <serverdata>
           <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="BIKENAVISERVER (3)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" />
+            <mapping deploy="/var/www/html" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

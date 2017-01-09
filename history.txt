@@ -385,3 +385,560 @@
   385  git status
   386  git push
   387  history > history.txt
+  388  git status
+  389  git add *.*
+  390  git commit -m "히스토리 수정된 내용 추가"
+  391  git push
+  392  git status
+  393  git add android_login_api/*
+  394  git status
+  395  git add android_login_api/Copy\ of\ login.php
+  396  git status
+  397  git push
+  398  git status
+  399  git commit -m "삭제"
+  400  git push
+  401  git status
+  402  cd /var/www/html
+  403  tail -f /var/log/apache2/error.log
+  404  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  405  tail -f /var/log/apache2/error.log
+  406  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  407  tail -f /var/log/apache2/error.log
+  408  git add *.*
+  409  git add android_login_api/*
+  410  git status
+  411  git commit -m "문제점 수정"
+  412  git push
+  413  ls
+  414  cd /var/log/html
+  415  ls
+  416  ll
+  417  cd /var
+  418  cd /var/www/html
+  419  ls
+  420  git status
+  421  ls
+  422  cd android_login_api/
+  423  ls
+  424  cd /var/www/html
+  425  ls
+  426  ll
+  427  git status
+  428  ll
+  429  cd git
+  430  cd .git
+  431  ls
+  432  cd ..
+  433  ls
+  434  cd html/
+  435  ls
+  436  git status
+  437  ls
+  438  tail -f /var/log/apache2/error.log
+  439  locale
+  440  tail -f /var/log/apache2/error.log
+  441  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  442  tail -f /var/log/apache2/error.log
+  443  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  444  cd /var/www/html
+  445  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  446  cd /var/www/html
+  447  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  448  ㅣㄴ
+  449  ls
+  450  history > history.txt
+  451  git add *.*
+  452  apt-get install couchdb
+  453  curl http://127.0.0.1:5984
+  454  root@kimyongtak:/var/www/html#
+  455  curl -X POST http://localhost:5984/_restart -H"Content-Type: application/json"
+  456  cd ~
+  457  git clone https://github.com/BenoitDuffez/crashreportsviewer.git
+  458  cd crashreportsviewer/
+  459  cd ..
+  460  ls
+  461  cd ..
+  462  ls
+  463  cd home/
+  464  cd ..
+  465  cd ~
+  466  ㅔㅈㅇ
+  467  pwd
+  468  cd crashreportsviewer/
+  469  curl -X POST http://localhost:5984/_restart -H"Content-Type: application/json"
+  470  netstat - ntlp
+  471  netstat | -nltp
+  472  netsta - nlp
+  473  netstat - nlp
+  474  cd /var/www/html
+  475  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  476  cd /var/www/html
+  477  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  478  cd /var/www/html
+  479  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  480  cd var/www/html
+  481  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  482  cd /var/www/html
+  483  composer
+  484  cd ..
+  485  composer
+  486  cd html/
+  487  composer require phpmailer/phpmailer
+  488  composer require league/oauth2-google
+  489  apt-get install gzip
+  490  composer require phpmailer/phpmailer
+  491  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  492  composer require phpmailer/phpmailer
+  493  apt-get install unzip
+  494  composer require phpmailer/phpmailer
+  495  php composer.phar install
+  496  cd /var/www/html
+  497  ls
+  498  php composer.phar install
+  499  composer install
+  500  composer update
+  501  composer install
+  502  composer require phpmailer/phpmailer
+  503  composer install
+  504  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  505  tailf /var/log/apache2/error.log | while read -r line; do echo -e "$line"; done;
+  506  mysql -uroot -p
+  507  ls
+  508  exit;
+  509  scrapy -version
+  510  python -version
+  511  pip install lxml
+  512  apt install pip
+  513  apt-get install python-pip
+  514  pip install lxml
+  515  pip install --upgrade pip
+  516  pip install lxml
+  517  sudo pip install -U setuptools
+  518  pip install lxml
+  519  pip install scrapy
+  520  apt-get install python
+  521  sudo apt-get install build-essentail
+  522  sudo apt-get install build-essential
+  523  sudo apt-get install python-dev
+  524  sudo apt-get install gcc
+  525  pip install lxml
+  526  pip install libxml2
+  527  sudo apt-get install libssl-dev libffi-dev python-dev libxml2-dev
+  528  pip install lxml
+  529  pip install scrapy
+  530  sudo apt-get install libssl-dev libffi-dev python-dev libxml2-dev libxslt-dev lib32z1-dev
+  531  pip install scrapy
+  532  sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev
+  533  sudo apt-get install python-dev
+  534  sudo apt-get install build-essential libssl-dev libffi-dev python-dev libxml2-dev
+  535  sudo apt-get install libssl-dev
+  536  sudo pip install scrapy --force --upgrade
+  537  ls
+  538  cd /
+  539  ls
+  540  find scrapytes.py
+  541  find scrapy
+  542  find untitled
+  543  find -n untitled
+  544  find / untitled
+  545  cd /usr/bin/python
+  546  sudo apt-get install python-scrapy
+  547  pip install scrapy
+  548  cd /usr/bin/python
+  549  cd /usr/bin
+  550  ls
+  551  cd python
+  552  cd /
+  553  ls
+  554  cd /usr/bin
+  555  ls
+  556  cd python
+  557  find scrapytest.py
+  558  find / -name scrapytest.py
+  559  cd /tmp/pycharm_project_882
+  560  ls
+  561  vi scrapytest.py
+  562  pip install lxml
+  563  ls
+  564  cd /home/
+  565  ls
+  566  mkdir scrapytest
+  567  cd scrapytest/
+  568  scrapy startproject scrapyTestProject
+  569  pip --version
+  570  pip install Scrapy
+  571  sudo apt-get install python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev libffi-dev libssl-dev
+  572  pip install scrapy
+  573  cd /home
+  574  ls
+  575  cd scrapytest
+  576  ls
+  577  cd scrapyTestProject/
+  578  ls
+  579  cd scrapyTestProject/
+  580  ls
+  581  cd ..
+  582  rm scrapytest/
+  583  rm -rf scrapytest/*
+  584  ls
+  585  rm -rf scrapytest
+  586  ls
+  587  mkdir test
+  588  cd tes
+  589  mkdir testCrawl
+  590  rm test
+  591  rm -rf test
+  592  cd testCrawl/
+  593  ls
+  594  ls -al
+  595  scrapy startproject CrawlTestPPompuHotBoard
+  596  cd CrawlTestPPompuHotBoard/
+  597  ls
+  598  cd CrawlTestPPompuHotBoard/
+  599  ls
+  600  cd ..
+  601  cd /tmp/pycharm_project_882/
+  602  scrapy runspider scrapytest.py -o quotes.json
+  603  scrapy startproject scrapytest
+  604  ls
+  605  cd scrapytest/
+  606  ls
+  607  cd scrapytest/
+  608  ls
+  609  vi quotes_spider.py
+  610  scrapy runspider quotes_spider.py -o quotes.json
+  611  cat quotes.json
+  612  ls
+  613  cd spi
+  614  cd spiders/
+  615  ls
+  616  cd ..
+  617  ls
+  618  cd /home
+  619  ls
+  620  cd testCrawl
+  621  cd CrawlTestPPompuHotBoard/
+  622  ls
+  623  cd CrawlTestPPompuHotBoard/
+  624  ls
+  625  cd home
+  626  ls
+  627  cd testCrawl/
+  628  ls
+  629  rm test.py
+  630  ls
+  631  ll
+  632  ls
+  633  cd /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/
+  634  ls
+  635  cd .
+  636  cd ..
+  637  ls
+  638  cd /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/
+  639  ls
+  640  cd spi
+  641  cd spiders/
+  642  scrapy crawl quotes
+  643  scrapy shell 'http://quotes.toscrape.com/page/1/'
+  644  cd /home/testCrawl/]
+  645  ls
+  646  cd /home/testCrawl/
+  647  ls
+  648  scrapy
+  649  ls
+  650  cd /var/www/html
+  651  ln -s testCrawl/spiders /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders/
+  652  ll /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders
+  653  cd ..
+  654  ll /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders
+  655  ls
+  656  unlink /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders/
+  657  rm /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders/
+  658  rm /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders
+  659  unlik /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders
+  660  unlink /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders
+  661  ll /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders
+  662  rm spiders
+  663  cd html/
+  664  rm spiders
+  665  ll
+  666  ls -l
+  667  mkdir testCrawl
+  668  ll testCrawl
+  669  ln -s /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders/ testCrawl/
+  670  ll
+  671  ll testCrawl/
+  672  scrapy shell 'http://gmarket.co.kr'
+  673  scrapy shell 'http:/quotes.toscrape.com'
+  674  scrapy shell 'http://quotes.toscrape.com'
+  675  cd /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders/
+  676  scrapy shell 'http://quotes.toscrape.com'
+  677  cd ..
+  678  cd home
+  679  cd /home
+  680  ls
+  681  cd ~
+  682  ls
+  683  cd home/
+  684  cd ..
+  685  sudo pip install virtualenv virtualenvwrapper
+  686  vi .bashrc
+  687  source .bashrc
+  688  mkvirtualenv hotdeal
+  689  sudo apt-get install libxml2-dev libxslt-dev python-dev zliblg-dev
+  690  sudo apt-get install libxml2-dev libxslt-dev python-dev zlib1g-dev
+  691  sudo apt-get install libxml2-dev libxslt-dev python-dev zlib2g-dev
+  692  sudo apt-get insall python-lxml
+  693  sudo apt-get install python-lxml
+  694  pip install lxml
+  695  exit() ;
+  696  deactive
+  697  deactive;
+  698  deactive() s
+  699  deactivate
+  700  vi .bashrc
+  701  sudo apt-get install python-lxml
+  702  workon hotdeal
+  703  pip install lxml
+  704  deactivate
+  705  sudo apt-get update
+  706  sudo apt-get install build-essential
+  707  python -v
+  708  python -V
+  709  sudo apt-get install python-pip
+  710  workon hotdeal
+  711  pip install lxml
+  712  sudo pip install lxml
+  713  sudo apt-get install libxml2-dev libxslt-dev python-dev zlib1g-dev
+  714  sudo apt-get install python-lxml
+  715  sudo apt-get install libffi-dev libssl-dev
+  716  pip install Scrapy
+  717  scrapy
+  718  exit
+  719  cd /home/testCrawl/CrawlTestPPompuHotBoard/
+  720  scrapy shell '
+  721  scrapy shell '
+  722  scrapy shell 'http://m.ppomppu.co.kr/new/pop_bbs.php?id=ppomppu&bot_type=pop_bbs'
+  723  ls
+  724  한글
+  725  ls
+  726  print '하이'
+  727  scrapy shell 'http://quotes.toscrape.com'
+  728  scrapy shell 'http://m.ppomppu.co.kr/new/hot_bbs.php?id=ppomppu&bot_type=hot_bbs'
+  729  scrapy shell "http://m.ppomppu.co.kr/new/hot_bbs.php?id=ppomppu&bot_type=hot_bbs"
+  730  scrapy shell "http://www.ppomppu.co.kr/hot.php?id=ppomppu"
+  731  scrapy shell ""
+  732  scrapy shell "http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=261652"
+  733  scrapy crawl ppompuHotBoard
+  734  scrapy crawl ppmpuHotBoard
+  735  cd /home/testCrawl/CrawlTestPPompuHotBoard/
+  736  scrapy crawl ppompuHotBoard
+  737  ls
+  738  scrapy crawl
+  739  scrapy crawl ppompuHotBoard
+  740  cd /home/testCrawl/CrawlTestPPompuHotBoard/
+  741  scrapy crawl ppompuHotBoard
+  742  scrapy crawl quotes
+  743  scrapy crawl ppompuHotBoard
+  744  �Ӥ�
+  745  ls
+  746  cd CrawlTestPPompuHotBoard/
+  747  ls
+  748  cd spiders/
+  749  ls
+  750  cd /home/testCrawl/CrawlTestPPompuHotBoard/home
+  751  cd testCrawl
+  752  scrapy crawl ppompuHotBoard
+  753  ls
+  754  cd CrawlTestPPompuHotBoard/
+  755  scrapy crawl ppompuHotBoard
+  756  cd ..
+  757  scrapy crawl ppompuHotBoard
+  758  ls
+  759  cd CrawlTestPPompuHotBoard/
+  760  ls
+  761  cd spiders/
+  762  ls
+  763  cd spid
+  764  cd spiders
+  765  ls
+  766  cd spiders
+  767  cd ..
+  768  ls
+  769  cd CrawlTestPPompuHotBoard/l
+  770  cd CrawlTestPPompuHotBoard/
+  771  cd ..
+  772  ls
+  773  rm home/
+  774  rm -rf home/
+  775  ls
+  776  cd CrawlTestPPompuHotBoard/
+  777  scrapy crawl ppompuHotBoard
+  778  scrapy crawl ppompuHotBoard -o ppompuHotBoard.json
+  779  ls
+  780  cd ..
+  781  cd CrawlTestPPompuHotBoard/
+  782  ls
+  783  cd CrawlTestPPompuHotBoard/
+  784  ls
+  785  scrapy crawl ppompuHotBoard
+  786  scrapy crawl ppompu
+  787  ls
+  788  cd /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/spiders/
+  789  ls
+  790  scrapy crawl ppompu
+  791  scrapy crawl ppompu -o some.json 2 > result.txt
+  792  ls
+  793  scrapy crawl ppompu -o some.json 2> result.txt
+  794  ls
+  795  rm result.txt
+  796  scrapy crawl ppompu -o some.json 2> result.txt
+  797  scrapy crawl ppompu
+  798  clear
+  799  scrapy crawl ppompu
+  800  cd /home/testCrawl/CrawlTestPPompuHotBoard/CrawlTestPPompuHotBoard/
+  801  scrapy crawl ppompu
+  802  scrapy crawl ppompu -o some.json 2> a.text
+  803  pip show MySQL-python
+  804  pip show MySQL -python
+  805  pip install MYSQL-python
+  806  pip show MySQL -python
+  807  pip show MySQL-python
+  808  pip install MYSQL-python
+  809  pip show MySQL-python
+  810  pip list | grep MySQL-python
+  811  python -c 'import MySQLdb'
+  812  pip install MySQL-python
+  813  aptitude show python-dev | grep ^State
+  814  apt install aptitude
+  815  aptitude show python-dev | grep ^State
+  816  aptitude show libmysqlclient-dev | grep ^State
+  817  apt-get install libmysqlclient-dev
+  818  aptitude show libmysqlclient-dev | grep ^State
+  819  pip show MySQL-python
+  820  pip install MySQL-python
+  821  python -c 'import MySQLdb'
+  822  pip list | grep MySQL-python
+  823  scrapy crawl ppompu
+  824  pip list | grep MySQL-python
+  825  scrapy crawl ppompu
+  826  curl
+  827  curl -h
+  828  curl -v
+  829  curl -V
+  830  curl google.com
+  831  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06
+  832  cd /var/www/html
+  833  ls
+  834  mkdir curlTest
+  835  ls
+  836  cd curlTest
+  837  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06 > gmarketBestDeal.html
+  838  ls
+  839  cat gmarketBestDeal.html
+  840  curl help
+  841  help curl
+  842  man -k curl
+  843  curl -h
+  844  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06 --output gmarketBestDeal.html
+  845  curl -h
+  846  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06 -o gmarketBestDeal.html
+  847  curl -o a.html http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06
+  848  ls
+  849  rm a.html
+  850  curl -h
+  851  curl -o http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06
+  852  curl --help
+  853  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06 > gmarketBestDeal.html
+  854  rm gmarketBestDeal.html
+  855  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06 > gmarketBestDeal.html
+  856  ls
+  857  curl gmarket.co.kr > gmarket.html
+  858  curl http://corners.gmarket.co.kr/Bestsellers?viewType=G&groupCode=G06 > gmarketBestDeal.html
+  859  curl http://corners.gmarket.co.kr/Bestsellers > gmarketBestDeal.html
+  860  curl http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  861  curl http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469 > test1.html
+  862  curl http://corners.gmarket.co.kr/Bestsellers > gmarketBestDeal.htmlcurl http://corners.gmarket.co.kr/Bestsellers > gmarketBestDeal.html
+  863  curl "http://diary2.gmarket.co.kr//Review/ViewPremiumReviewLayer?flag=v^&prvw_no=43635088" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4" -H "Upgrade-Insecure-Requests: 1" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36" -H "Chrome-Proxy: s=CjUKEwjIxeuJs47RAhXHkVgKHRhDDbASDAiFnILDBRDNgPfJARoQCg5zdGFibGVfZGVmYXVsdBJHMEUCIB0tcOlEO7FBufqYSK1VgeDJBthN2w9CZZ8hS_PLgp6yAiEAlfrQ4zGKFtIAkqhc_m2mtem2A56L1Bo8LLLNPlMzs9s=, c=win, b=2883, p=87" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" -H "Referer: http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=876932999" -H "Cookie: PCUID=14714041281981923251156; _ga=GA1.3.434072566.1473043056; currency=USD; shipNation=KR; shipnation=KR; cc=CHM1B003; RPM=BT^%^3DB1482648755162; cguid=11388365577408016142000000; pguid=21471404129862004572010000; sguid=31482648755382004042255000; Pif=67D4D3B7BEF59864807172B5364015669426B26FB6FC408E0E5CC9BBE9F86AE0409F511FA53EB14E3921F76B95DA9E01; Sif=9c533d6e1ad8d111f53e1db5e6f26170; charset=koKR; WingFlag=R; BASKET^%^5FCALLBACK^%^5FSTAT=F; user^%^5Finfo=isNego=N; gmktloadingtimecheck=N; ssguid=3148264875538200404225500111" -H "Proxy-Connection: keep-alive" -H "Save-Data: on" --compressed > b.html
+  864  curl -L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  865  curl -L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469 > c.html
+  866  curl -i naver.com
+  867  curl naver.com
+  868  curl naver.com/json-test
+  869  curl http:naver.com/json-test
+  870  curl http://naver.com/json-test
+  871  curl http://www.naver.com/json-test
+  872  cls
+  873  clear
+  874  curl http://www.naver.com/json-test
+  875  curl -i http://www.naver.com/json-test
+  876  curl http://www.naver.com/json-test/methods
+  877  clear
+  878  curl http://www.naver.com/json-test/methods
+  879  clear
+  880  curl http://www.naver.com/json-test/methods
+  881  curl https://nid.naver.com/user2/help/myInfo.nhn?lang=ko_KR
+  882  curl -v
+  883  curl --version
+  884  curl -L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  885  cd /var/www/html/
+  886  ls
+  887  cd curlTest/
+  888  ls
+  889  curl -o test2.html -L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  890  curl -C -o test2.html -L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  891  curl -C - -o test2.html [A-L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  892  curl -v -C - -o test2.html -L http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  893  curl -C -o test2.html -L --user-agent "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14"  http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  894  curl -o test2.html -L --user-agent "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14"  http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  895  curl -H "Referer:http://gmarket.co.kr" -o test2.html -L --user-agent "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14"  http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  896  curl -o test3.html http://mitem.gmarket.co.kr/Item?goodsCode=856203187
+  897  curl -o gmarket_comment.html http://mitem.gmarket.co.kr/Review/TextReview?goodscode=856203187&page_no=1
+  898  curl -o gmarket_comment.html http://mitem.gmarket.co.kr/Review/TextReview?goodscode=856203187&page_no=[1~1000]
+  899  curl -o gmarket_comment.html http://mitem.gmarket.co.kr/Review/TextReview?goodscode=856203187&page_no=2
+  900  curl -o gmarket_comment.html http://mitem.gmarket.co.kr/Review/TextReview?goodscode=856203187&page_no=6
+  901  curl --keepalive-time 30 http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  902  curl --keepalive-time 30 -o gmarket_pc_comment.html  http://item2.gmarket.co.kr/Item/DetailView/Item.aspx?goodscode=747669469
+  903  ls
+  904  apt-get install php-xdebug
+  905  php -m
+  906  sudo service apache2 restart
+  907  vi /etc/php/7.0/mods-available/xdebug.ini
+  908  sudo service apache2 restart
+  909  apt-get install php-curl
+  910  sudo service apache2 restart
+  911  cd /usr/lib/php/
+  912  ls
+  913  cd 7.0/
+  914  ls
+  915  cd ..
+  916  sudo service apache2 restart
+  917  cd /var/www/html
+  918  find example_homepage.txt
+  919  wher example_homepage.txt
+  920  where example_homepage.txt
+  921  sudo service apache2 restart
+  922  tail -f /var/log/apache2/error.log
+  923  ls -al
+  924  cd ..
+  925  ls -al
+  926  sudo service apache2 restart
+  927  cd ..
+  928  service apache2 restart
+  929  service apache2 stop
+  930  tail -f /var/log/apache2/error.log
+  931  cd /var/www/html
+  932  cd curlTest/
+  933  ls
+  934  cd /var/mail/$USER
+  935  vi /var/mail/$USER
+  936  ls
+  937  cd .
+  938  cd ..
+  939  ls
+  940  cd home/
+  941  ls
+  942  history > history.txt
+  943  cd /var/www/html
+  944  history > history.txt
